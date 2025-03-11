@@ -809,11 +809,11 @@ function handleOrderSubmission(e) {
     notes
   };
   
+  // Store order data in localStorage for later use with payment proof
+  localStorage.setItem('currentOrder', JSON.stringify(orderData));
+  
   // Generate invoice
   generateInvoice(orderData);
-  
-  // Send Telegram notification
-  sendTelegramNotification(orderData);
   
   // Hide checkout modal and show invoice
   document.getElementById('checkout-modal').classList.add('hidden');
@@ -952,21 +952,26 @@ function sendPaymentProofToTelegram(imageDataUrl) {
     return;
   }
   
-  // Get the current order number from the invoice
-  const invoiceDetails = document.getElementById('invoice-details');
-  const orderNumberMatch = invoiceDetails.innerHTML.match(/Order #(ORD-\d+)/);
-  const orderNumber = orderNumberMatch ? orderNumberMatch[1] : 'Unknown';
+  // Get the current order data from localStorage
+  const orderData = JSON.parse(localStorage.getItem('currentOrder'));
+  if (!orderData) {
+    console.error('Order data not found');
+    return;
+  }
   
-  // Format message
-  const message = `🧾 <b>PAYMENT RECEIVED</b>\n\n📝 For Order: <b>${orderNumber}</b>\n\nCustomer has uploaded payment proof. Please check the attached image.`;
+  // Format order message for Telegram
+  const orderMessage = window.TelegramBot.formatOrderForTelegram(orderData);
   
-  // Send the message to Telegram
-  window.TelegramBot.sendTelegramMessage(botToken, chatId, message)
+  // Format payment message
+  const paymentMessage = `🧾 <b>NEW ORDER WITH PAYMENT</b>\n\n📝 Order #<b>${orderData.orderNumber}</b> has been placed with payment proof attached.`;
+  
+  // Send the order details with payment notification to Telegram
+  window.TelegramBot.sendPaymentProofMessage(botToken, chatId, orderMessage, imageDataUrl)
     .then(response => {
       if (response.ok) {
-        console.log('Payment notification sent successfully to Telegram');
+        console.log('Order with payment notification sent successfully to Telegram');
       } else {
-        console.error('Failed to send payment notification to Telegram:', response);
+        console.error('Failed to send order with payment notification to Telegram:', response);
       }
     });
 }
