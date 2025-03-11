@@ -150,6 +150,36 @@ const menuData = {
       price: 2.99,
       image: 'https://via.placeholder.com/300?text=Sparkling+Water'
     }
+  ],
+  soup: [
+    {
+      id: 'soup1',
+      name: 'Chicken Noodle Soup',
+      description: 'Classic chicken soup with vegetables and noodles',
+      price: 8.99,
+      image: 'https://via.placeholder.com/300?text=Chicken+Soup'
+    },
+    {
+      id: 'soup2',
+      name: 'Tomato Bisque',
+      description: 'Creamy tomato soup with basil',
+      price: 7.99,
+      image: 'https://via.placeholder.com/300?text=Tomato+Soup'
+    },
+    {
+      id: 'soup3',
+      name: 'Miso Soup',
+      description: 'Traditional Japanese soup with tofu and seaweed',
+      price: 6.99,
+      image: 'https://via.placeholder.com/300?text=Miso+Soup'
+    },
+    {
+      id: 'soup4',
+      name: 'Clam Chowder',
+      description: 'Creamy New England style soup with clams and potatoes',
+      price: 9.99,
+      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+    }
   ]
 };
 
