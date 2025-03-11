@@ -31,6 +31,36 @@ const menuData = {
       image: 'https://via.placeholder.com/300?text=Brunch+Set'
     }
   ],
+  soup: [
+    {
+      id: 'soup1',
+      name: 'Chicken Noodle Soup',
+      description: 'Classic chicken soup with vegetables and noodles',
+      price: 8.99,
+      image: 'https://via.placeholder.com/300?text=Chicken+Soup'
+    },
+    {
+      id: 'soup2',
+      name: 'Tomato Bisque',
+      description: 'Creamy tomato soup with basil',
+      price: 7.99,
+      image: 'https://via.placeholder.com/300?text=Tomato+Soup'
+    },
+    {
+      id: 'soup3',
+      name: 'Miso Soup',
+      description: 'Traditional Japanese soup with tofu and seaweed',
+      price: 6.99,
+      image: 'https://via.placeholder.com/300?text=Miso+Soup'
+    },
+    {
+      id: 'soup4',
+      name: 'Clam Chowder',
+      description: 'Creamy New England style soup with clams and potatoes',
+      price: 9.99,
+      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+    }
+  ],
   meat: [
     {
       id: 'meat1',
@@ -151,6 +181,7 @@ const menuData = {
       image: 'https://via.placeholder.com/300?text=Sparkling+Water'
     }
   ]
+  
 };
 
 // State to track cart items
@@ -292,8 +323,6 @@ function updateItemQuantity(itemId, change) {
 function updateCartUI() {
   const cartItemsEl = document.getElementById('cart-items');
   const cartCountEl = document.getElementById('cart-count');
-  const subtotalEl = document.getElementById('subtotal-price');
-  const taxEl = document.getElementById('tax-price');
   const totalEl = document.getElementById('total-price');
   
   // Update cart count
@@ -345,14 +374,10 @@ function updateCartUI() {
     });
   }
   
-  // Calculate totals
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.1; // 10% tax
-  const total = subtotal + tax;
+  // Calculate total
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
-  // Update total elements
-  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-  taxEl.textContent = `$${tax.toFixed(2)}`;
+  // Update total element
   totalEl.textContent = `$${total.toFixed(2)}`;
 }
 
@@ -368,6 +393,11 @@ function showCheckoutModal() {
   }
   
   document.getElementById('checkout-modal').classList.remove('hidden');
+  
+  // Close cart sidebar on mobile when opening checkout modal
+  if (window.innerWidth <= 768) {
+    document.getElementById('cart-sidebar').classList.add('hidden');
+  }
   
   // Initialize map if it hasn't been done yet
   if (!map) {
@@ -429,10 +459,8 @@ function handleOrderSubmission(e) {
   const orderNumber = 'ORD-' + Math.floor(Math.random() * 10000);
   const orderDate = new Date().toLocaleString();
   
-  // Calculate totals
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  // Calculate total
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
   // Generate invoice
   generateInvoice({
@@ -440,8 +468,6 @@ function handleOrderSubmission(e) {
     orderDate,
     customer: { name, phone, address },
     items: cart,
-    subtotal,
-    tax,
     total,
     notes
   });
@@ -481,14 +507,6 @@ function generateInvoice(order) {
   
   // Update invoice summary
   invoiceSummaryEl.innerHTML = `
-    <div class="invoice-summary-row">
-      <span>Subtotal:</span>
-      <span>$${order.subtotal.toFixed(2)}</span>
-    </div>
-    <div class="invoice-summary-row">
-      <span>Tax (10%):</span>
-      <span>$${order.tax.toFixed(2)}</span>
-    </div>
     <div class="invoice-summary-row total">
       <span>Total:</span>
       <span>$${order.total.toFixed(2)}</span>
