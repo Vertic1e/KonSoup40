@@ -493,12 +493,7 @@ function setupEventListeners() {
 }
 
 function addSettingsButton() {
-  const header = document.querySelector('header');
-  const settingsButton = document.createElement('div');
-  settingsButton.className = 'settings-icon';
-  settingsButton.innerHTML = '<i class="fas fa-cog"></i>';
-  settingsButton.addEventListener('click', showSettingsModal);
-  header.appendChild(settingsButton);
+  // Settings button has been removed as requested
 }
 
 function showSettingsModal() {
