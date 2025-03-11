@@ -367,6 +367,11 @@ function showCheckoutModal() {
   
   document.getElementById('checkout-modal').classList.remove('hidden');
   
+  // Close cart sidebar on mobile when opening checkout modal
+  if (window.innerWidth <= 768) {
+    document.getElementById('cart-sidebar').classList.add('hidden');
+  }
+  
   // Initialize map if it hasn't been done yet
   if (!map) {
     initMap();
