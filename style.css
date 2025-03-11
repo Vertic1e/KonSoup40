@@ -59,11 +59,12 @@ header {
 
 .category-nav {
   display: flex;
-  justify-content: space-between;
-  padding: 10px 100px;
+  justify-content: space-evenly;
+  padding: 10px 20px;
   background-color: #008f39;
   margin: 20px;
   border-radius: 30px;
+  width: calc(100% - 40px);
 }
 
 .category-btn {
@@ -453,9 +454,10 @@ header {
     overflow-x: auto;
     white-space: nowrap;
     flex-wrap: nowrap;
-    justify-content: flex-start;
-    padding: 10px;
+    justify-content: space-between;
+    padding: 10px 15px;
     margin: 10px 5px;
+    width: calc(100% - 10px);
   }
 
   .category-btn {
