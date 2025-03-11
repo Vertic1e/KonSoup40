@@ -345,14 +345,12 @@ function updateCartUI() {
     });
   }
   
-  // Calculate totals
+  // Calculate total
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.1; // 10% tax
-  const total = subtotal + tax;
+  const total = subtotal;
   
   // Update total elements
   subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-  taxEl.textContent = `$${tax.toFixed(2)}`;
   totalEl.textContent = `$${total.toFixed(2)}`;
 }
 
@@ -429,10 +427,9 @@ function handleOrderSubmission(e) {
   const orderNumber = 'ORD-' + Math.floor(Math.random() * 10000);
   const orderDate = new Date().toLocaleString();
   
-  // Calculate totals
+  // Calculate total
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  const total = subtotal;
   
   // Generate invoice
   generateInvoice({
@@ -441,7 +438,6 @@ function handleOrderSubmission(e) {
     customer: { name, phone, address },
     items: cart,
     subtotal,
-    tax,
     total,
     notes
   });
@@ -484,10 +480,6 @@ function generateInvoice(order) {
     <div class="invoice-summary-row">
       <span>Subtotal:</span>
       <span>$${order.subtotal.toFixed(2)}</span>
-    </div>
-    <div class="invoice-summary-row">
-      <span>Tax (10%):</span>
-      <span>$${order.tax.toFixed(2)}</span>
     </div>
     <div class="invoice-summary-row total">
       <span>Total:</span>
