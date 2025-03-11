@@ -1,59 +1,52 @@
 
 // Exchange rate constant (1 USD to Cambodian Riel)
-const EXCHANGE_RATE = 4100; // 1 USD = 4100 Riel (adjust as needed)
+const EXCHANGE_RATE = 4000; // 1 USD = 4100 Riel (adjust as needed)
 
 // Menu data structure - you can add more items easily
 const menuData = {
   set: [
     {
       id: 'set1',
-      name: 'Family Meal Set',
-      description: 'Perfect for sharing with family',
-      price: 29.99,
+      name: 'ឈុតស៊ុប(តូច)',
+      description: 'Soup Set',
+      price: 13.75,
       image: 'https://via.placeholder.com/300?text=Family+Set'
     },
     {
       id: 'set2',
-      name: 'Couple Dinner Set',
-      description: 'Romantic dinner for two',
-      price: 19.99,
+      name: 'ឈុតស៊ុប(ធំ)',
+      description: 'Family Set',
+      price: 50.00,
       image: 'https://via.placeholder.com/300?text=Couple+Set'
     },
     {
       id: 'set3',
-      name: 'Lunch Special Set',
-      description: 'Weekday lunch special',
-      price: 12.99,
+      name: 'ឈុតសាច់អាំង',
+      description: 'BBQ Set',
+      price: 9.75,
       image: 'https://via.placeholder.com/300?text=Lunch+Set'
-    },
-    {
-      id: 'set4',
-      name: 'Weekend Brunch Set',
-      description: 'Perfect for lazy weekends',
-      price: 15.99,
-      image: 'https://via.placeholder.com/300?text=Brunch+Set'
     }
   ],
   soup: [
     {
       id: 'soup1',
-      name: 'Chicken Noodle Soup',
-      description: 'Classic chicken soup with vegetables and noodles',
-      price: 8.99,
+      name: 'ស៊ុបគោ',
+      description: 'Ox Soup',
+      price: 6.00,
       image: 'https://via.placeholder.com/300?text=Chicken+Soup'
     },
     {
       id: 'soup2',
-      name: 'Tomato Bisque',
-      description: 'Creamy tomato soup with basil',
-      price: 7.99,
+      name: 'ស៊ុបប្រហិតត្រី',
+      description: 'Fish Ball Soup',
+      price: 6.00,
       image: 'https://via.placeholder.com/300?text=Tomato+Soup'
     },
     {
       id: 'soup3',
-      name: 'Miso Soup',
-      description: 'Traditional Japanese soup with tofu and seaweed',
-      price: 6.99,
+      name: 'ស៊ុបខួរ',
+      description: 'Ox Brain Soup',
+      price: 7.00,
       image: 'https://via.placeholder.com/300?text=Miso+Soup'
     },
     {
@@ -64,7 +57,7 @@ const menuData = {
       image: 'https://via.placeholder.com/300?text=Clam+Chowder'
     }
   ],
-  meat: [
+  bbq: [
     {
       id: 'meat1',
       name: 'Grilled Steak',
@@ -92,66 +85,6 @@ const menuData = {
       description: 'Grilled lamb chops with rosemary',
       price: 26.99,
       image: 'https://via.placeholder.com/300?text=Lamb'
-    }
-  ],
-  vegetable: [
-    {
-      id: 'veg1',
-      name: 'Garden Salad',
-      description: 'Fresh mixed greens with vinaigrette',
-      price: 9.99,
-      image: 'https://via.placeholder.com/300?text=Salad'
-    },
-    {
-      id: 'veg2',
-      name: 'Grilled Vegetables',
-      description: 'Seasonal vegetables grilled to perfection',
-      price: 12.99,
-      image: 'https://via.placeholder.com/300?text=Grilled+Veg'
-    },
-    {
-      id: 'veg3',
-      name: 'Vegetable Curry',
-      description: 'Mixed vegetables in aromatic curry sauce',
-      price: 14.99,
-      image: 'https://via.placeholder.com/300?text=Veg+Curry'
-    },
-    {
-      id: 'veg4',
-      name: 'Mushroom Risotto',
-      description: 'Creamy arborio rice with wild mushrooms',
-      price: 16.99,
-      image: 'https://via.placeholder.com/300?text=Risotto'
-    }
-  ],
-  noodle: [
-    {
-      id: 'noodle1',
-      name: 'Pad Thai',
-      description: 'Classic Thai stir-fried noodles',
-      price: 13.99,
-      image: 'https://via.placeholder.com/300?text=Pad+Thai'
-    },
-    {
-      id: 'noodle2',
-      name: 'Ramen',
-      description: 'Japanese noodle soup with pork',
-      price: 15.99,
-      image: 'https://via.placeholder.com/300?text=Ramen'
-    },
-    {
-      id: 'noodle3',
-      name: 'Spaghetti Bolognese',
-      description: 'Italian pasta with meat sauce',
-      price: 14.99,
-      image: 'https://via.placeholder.com/300?text=Spaghetti'
-    },
-    {
-      id: 'noodle4',
-      name: 'Udon Stir Fry',
-      description: 'Thick Japanese noodles with vegetables',
-      price: 16.99,
-      image: 'https://via.placeholder.com/300?text=Udon'
     }
   ],
   drink: [
