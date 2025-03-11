@@ -476,6 +476,22 @@ function setupEventListeners() {
   // Print invoice
   document.getElementById('print-invoice-btn').addEventListener('click', printInvoice);
   
+  // Payment upload button
+  document.getElementById('trigger-upload-btn').addEventListener('click', function() {
+    document.getElementById('payment-proof').click();
+  });
+  
+  // Payment proof upload handling
+  document.getElementById('payment-proof').addEventListener('change', handlePaymentUpload);
+  
+  // Done button after payment
+  document.getElementById('payment-done-btn').addEventListener('click', function() {
+    document.getElementById('invoice-modal').classList.add('hidden');
+    // Reset cart and UI
+    cart = [];
+    updateCartUI();
+  });
+  
   // Settings form
   document.getElementById('settings-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -905,6 +921,54 @@ function printInvoice() {
   printWindow.focus();
   printWindow.print();
   printWindow.close();
+}
+
+function handlePaymentUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  // Show preview of uploaded payment proof
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const previewImg = document.getElementById('preview-image');
+    previewImg.src = e.target.result;
+    document.getElementById('payment-preview').style.display = 'block';
+    document.getElementById('payment-done-btn').style.display = 'inline-block';
+    
+    // Send payment proof to Telegram
+    sendPaymentProofToTelegram(e.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+function sendPaymentProofToTelegram(imageDataUrl) {
+  // Get saved Telegram settings
+  const botToken = localStorage.getItem('telegram_bot_token');
+  const chatId = localStorage.getItem('telegram_chat_id');
+  
+  // Check if Telegram is configured
+  if (!botToken || !chatId) {
+    console.warn('Telegram notification not sent: Bot token or Chat ID not configured');
+    return;
+  }
+  
+  // Get the current order number from the invoice
+  const invoiceDetails = document.getElementById('invoice-details');
+  const orderNumberMatch = invoiceDetails.innerHTML.match(/Order #(ORD-\d+)/);
+  const orderNumber = orderNumberMatch ? orderNumberMatch[1] : 'Unknown';
+  
+  // Format message
+  const message = `🧾 <b>PAYMENT RECEIVED</b>\n\n📝 For Order: <b>${orderNumber}</b>\n\nCustomer has uploaded payment proof. Please check the attached image.`;
+  
+  // Send the message to Telegram
+  window.TelegramBot.sendTelegramMessage(botToken, chatId, message)
+    .then(response => {
+      if (response.ok) {
+        console.log('Payment notification sent successfully to Telegram');
+      } else {
+        console.error('Failed to send payment notification to Telegram:', response);
+      }
+    });
 }
 
 // Function to add new items to the menu

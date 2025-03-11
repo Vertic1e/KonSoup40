@@ -386,7 +386,34 @@ header {
   margin-top: 30px;
 }
 
-#print-invoice-btn {
+.payment-info {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px dashed #008f39;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.payment-method {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.payment-upload {
+  margin: 15px 0;
+}
+
+.payment-upload label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.hidden-upload {
+  display: none;
+}
+
+.upload-btn {
+  display: inline-block;
   padding: 10px 20px;
   background-color: #008f39;
   color: white;
@@ -396,8 +423,40 @@ header {
   transition: background-color 0.3s;
 }
 
-#print-invoice-btn:hover {
+.upload-btn:hover {
   background-color: #006428;
+}
+
+.payment-preview {
+  margin-top: 15px;
+  text-align: center;
+  display: none;
+}
+
+.payment-preview img {
+  max-width: 100%;
+  max-height: 300px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#print-invoice-btn, #payment-done-btn {
+  padding: 10px 20px;
+  background-color: #008f39;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 5px;
+}
+
+#print-invoice-btn:hover, #payment-done-btn:hover {
+  background-color: #006428;
+}
+
+#payment-done-btn {
+  display: none;
 }
 
 @media (max-width: 768px) {

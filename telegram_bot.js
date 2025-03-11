@@ -77,8 +77,31 @@ function formatOrderForTelegram(order) {
   return message;
 }
 
+// Function to send payment proof notification
+function sendPaymentProofMessage(botToken, chatId, message, imageUrl) {
+  // First send text message
+  return sendTelegramMessage(botToken, chatId, message)
+    .then(response => {
+      if (response.ok) {
+        console.log("Payment text notification sent successfully");
+        // If we have an image URL from a file upload
+        if (imageUrl && imageUrl.startsWith('data:image')) {
+          console.log("Image data received, will send as separate message");
+          // At this point, we would ideally send the image directly, but Telegram
+          // requires a file upload rather than a Data URL. We inform the user
+          // that payment was received.
+          const followupMsg = "💳 *Payment image received*\n\nThe customer has uploaded proof of payment.";
+          return sendTelegramMessage(botToken, chatId, followupMsg);
+        }
+        return response;
+      }
+      return response;
+    });
+}
+
 // Export functions for use in main script
 window.TelegramBot = {
   sendTelegramMessage,
-  formatOrderForTelegram
+  formatOrderForTelegram,
+  sendPaymentProofMessage
 };
