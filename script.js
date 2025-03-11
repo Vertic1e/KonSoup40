@@ -532,14 +532,33 @@ function testTelegramNotification() {
     return;
   }
   
+  // Show testing indicator
+  const testButton = document.getElementById('test-telegram-btn');
+  const originalText = testButton.textContent;
+  testButton.textContent = "Testing...";
+  testButton.disabled = true;
+  
   const testMessage = '🔔 <b>TEST NOTIFICATION</b>\n\nThis is a test message from your Restaurant Order System. If you can see this, your Telegram notifications are working correctly!';
   
   window.TelegramBot.sendTelegramMessage(botToken, chatId, testMessage)
     .then(response => {
+      testButton.textContent = originalText;
+      testButton.disabled = false;
+      
       if (response.ok) {
         alert('Test notification sent successfully! Check your Telegram.');
       } else {
-        alert('Failed to send test notification. Please check your token and chat ID.');
+        let errorMessage = 'Failed to send test notification. ';
+        
+        if (response.description) {
+          errorMessage += response.description;
+        } else if (response.error) {
+          errorMessage += response.error;
+        } else {
+          errorMessage += 'Please check your token and chat ID.';
+        }
+        
+        alert(errorMessage);
         console.error('Telegram test failed:', response);
       }
     });

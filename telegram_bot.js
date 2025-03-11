@@ -1,7 +1,21 @@
 
 // Telegram Bot Integration for Restaurant Order System
 function sendTelegramMessage(botToken, chatId, message) {
+  // Validate inputs
+  if (!botToken || !botToken.trim()) {
+    return Promise.resolve({ ok: false, error: "Bot token is empty" });
+  }
+  
+  if (!chatId || !chatId.trim()) {
+    return Promise.resolve({ ok: false, error: "Chat ID is empty" });
+  }
+  
+  // Ensure chatId is properly formatted (remove any spaces)
+  chatId = chatId.trim();
+  
   const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+  
+  console.log(`Sending message to chat ID: ${chatId}`);
   
   return fetch(url, {
     method: 'POST',
@@ -14,10 +28,17 @@ function sendTelegramMessage(botToken, chatId, message) {
       parse_mode: 'HTML'
     })
   })
-  .then(response => response.json())
+  .then(response => {
+    console.log("Telegram API response status:", response.status);
+    return response.json();
+  })
+  .then(data => {
+    console.log("Telegram API response data:", data);
+    return data;
+  })
   .catch(error => {
     console.error('Error sending Telegram message:', error);
-    return { ok: false, error: error.message };
+    return { ok: false, error: error.message || "Network error" };
   });
 }
 
