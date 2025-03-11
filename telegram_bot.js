@@ -13,6 +13,14 @@ function sendTelegramMessage(botToken, chatId, message) {
   // Ensure chatId is properly formatted (remove any spaces)
   chatId = chatId.trim();
   
+  // Attempt to convert to number if it's numeric
+  if (/^-?\d+$/.test(chatId)) {
+    // It's a valid number format (could be positive or negative)
+    console.log("Using numeric chat ID format");
+  } else {
+    console.log("Warning: Chat ID doesn't appear to be in standard numeric format");
+  }
+  
   const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
   
   console.log(`Sending message to chat ID: ${chatId}`);
