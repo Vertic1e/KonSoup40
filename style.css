@@ -58,7 +58,7 @@ header {
 
 .category-nav {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
   padding: 10px 20px;
   background-color: #008f39;
   margin: 20px;
