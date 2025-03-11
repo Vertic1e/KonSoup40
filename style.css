@@ -41,6 +41,14 @@ header {
   color: #ff7700;
 }
 
+.settings-icon {
+  position: absolute;
+  right: 20px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #008f39;
+}
+
 #cart-count {
   position: absolute;
   top: -10px;

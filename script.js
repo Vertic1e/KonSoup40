@@ -475,6 +475,74 @@ function setupEventListeners() {
   
   // Print invoice
   document.getElementById('print-invoice-btn').addEventListener('click', printInvoice);
+  
+  // Settings form
+  document.getElementById('settings-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    saveTelegramSettings();
+  });
+  
+  // Test Telegram button
+  document.getElementById('test-telegram-btn').addEventListener('click', testTelegramNotification);
+  
+  // Load saved Telegram settings
+  loadTelegramSettings();
+  
+  // Add settings button to header
+  addSettingsButton();
+}
+
+function addSettingsButton() {
+  const header = document.querySelector('header');
+  const settingsButton = document.createElement('div');
+  settingsButton.className = 'settings-icon';
+  settingsButton.innerHTML = '<i class="fas fa-cog"></i>';
+  settingsButton.addEventListener('click', showSettingsModal);
+  header.appendChild(settingsButton);
+}
+
+function showSettingsModal() {
+  document.getElementById('settings-modal').classList.remove('hidden');
+}
+
+function saveTelegramSettings() {
+  const botToken = document.getElementById('telegram-bot-token').value;
+  const chatId = document.getElementById('telegram-chat-id').value;
+  
+  localStorage.setItem('telegram_bot_token', botToken);
+  localStorage.setItem('telegram_chat_id', chatId);
+  
+  alert('Settings saved successfully!');
+}
+
+function loadTelegramSettings() {
+  const botToken = localStorage.getItem('telegram_bot_token') || '';
+  const chatId = localStorage.getItem('telegram_chat_id') || '';
+  
+  document.getElementById('telegram-bot-token').value = botToken;
+  document.getElementById('telegram-chat-id').value = chatId;
+}
+
+function testTelegramNotification() {
+  const botToken = document.getElementById('telegram-bot-token').value;
+  const chatId = document.getElementById('telegram-chat-id').value;
+  
+  if (!botToken || !chatId) {
+    alert('Please enter both Telegram Bot Token and Chat ID before testing');
+    return;
+  }
+  
+  const testMessage = '🔔 <b>TEST NOTIFICATION</b>\n\nThis is a test message from your Restaurant Order System. If you can see this, your Telegram notifications are working correctly!';
+  
+  window.TelegramBot.sendTelegramMessage(botToken, chatId, testMessage)
+    .then(response => {
+      if (response.ok) {
+        alert('Test notification sent successfully! Check your Telegram.');
+      } else {
+        alert('Failed to send test notification. Please check your token and chat ID.');
+        console.error('Telegram test failed:', response);
+      }
+    });
 }
 
 function displayMenuItems(category) {
@@ -701,19 +769,51 @@ function handleOrderSubmission(e) {
   // Calculate total
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
-  // Generate invoice
-  generateInvoice({
+  // Create order object
+  const orderData = {
     orderNumber,
     orderDate,
     customer: { name, phone, address },
     items: cart,
     total,
     notes
-  });
+  };
+  
+  // Generate invoice
+  generateInvoice(orderData);
+  
+  // Send Telegram notification
+  sendTelegramNotification(orderData);
   
   // Hide checkout modal and show invoice
   document.getElementById('checkout-modal').classList.add('hidden');
   document.getElementById('invoice-modal').classList.remove('hidden');
+}
+
+// Function to send Telegram notification
+function sendTelegramNotification(orderData) {
+  // Get saved Telegram settings
+  const botToken = localStorage.getItem('telegram_bot_token');
+  const chatId = localStorage.getItem('telegram_chat_id');
+  
+  // Check if Telegram is configured
+  if (!botToken || !chatId) {
+    console.warn('Telegram notification not sent: Bot token or Chat ID not configured');
+    return;
+  }
+  
+  // Format the order data for Telegram
+  const message = window.TelegramBot.formatOrderForTelegram(orderData);
+  
+  // Send the message to Telegram
+  window.TelegramBot.sendTelegramMessage(botToken, chatId, message)
+    .then(response => {
+      if (response.ok) {
+        console.log('Telegram notification sent successfully');
+      } else {
+        console.error('Failed to send Telegram notification:', response);
+      }
+    });
 }
 
 function generateInvoice(order) {
