@@ -292,8 +292,6 @@ function updateItemQuantity(itemId, change) {
 function updateCartUI() {
   const cartItemsEl = document.getElementById('cart-items');
   const cartCountEl = document.getElementById('cart-count');
-  const subtotalEl = document.getElementById('subtotal-price');
-  const taxEl = document.getElementById('tax-price');
   const totalEl = document.getElementById('total-price');
   
   // Update cart count
@@ -346,11 +344,9 @@ function updateCartUI() {
   }
   
   // Calculate total
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const total = subtotal;
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
-  // Update total elements
-  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  // Update total element
   totalEl.textContent = `$${total.toFixed(2)}`;
 }
 
@@ -433,8 +429,7 @@ function handleOrderSubmission(e) {
   const orderDate = new Date().toLocaleString();
   
   // Calculate total
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const total = subtotal;
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
   // Generate invoice
   generateInvoice({
@@ -442,7 +437,6 @@ function handleOrderSubmission(e) {
     orderDate,
     customer: { name, phone, address },
     items: cart,
-    subtotal,
     total,
     notes
   });
@@ -482,10 +476,6 @@ function generateInvoice(order) {
   
   // Update invoice summary
   invoiceSummaryEl.innerHTML = `
-    <div class="invoice-summary-row">
-      <span>Subtotal:</span>
-      <span>$${order.subtotal.toFixed(2)}</span>
-    </div>
     <div class="invoice-summary-row total">
       <span>Total:</span>
       <span>$${order.total.toFixed(2)}</span>
