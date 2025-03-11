@@ -86,11 +86,10 @@ function sendPaymentProofMessage(botToken, chatId, message, imageUrl) {
         console.log("Order notification sent successfully");
         // If we have an image URL from a file upload
         if (imageUrl && imageUrl.startsWith('data:image')) {
-          console.log("Image data received, will send as separate message");
+          console.log("Image data received, sending actual image to Telegram");
           
-          // Send a follow-up message about the payment
-          const followupMsg = "💳 <b>Payment proof received</b>\n\nThe customer has uploaded proof of payment for this order.";
-          return sendTelegramMessage(botToken, chatId, followupMsg);
+          // Send actual image to Telegram
+          return sendImageToTelegram(botToken, chatId, imageUrl, "💳 <b>Payment proof</b>");
         }
         return response;
       }
@@ -98,9 +97,58 @@ function sendPaymentProofMessage(botToken, chatId, message, imageUrl) {
     });
 }
 
+// Function to send an image to Telegram
+function sendImageToTelegram(botToken, chatId, imageDataUrl, caption) {
+  if (!botToken || !chatId || !imageDataUrl) {
+    return Promise.resolve({ ok: false, error: "Missing required parameters" });
+  }
+  
+  // Convert data URL to blob
+  const byteString = atob(imageDataUrl.split(',')[1]);
+  const mimeType = imageDataUrl.split(',')[0].split(':')[1].split(';')[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  
+  const blob = new Blob([ab], { type: mimeType });
+  
+  // Create FormData to send the image
+  const formData = new FormData();
+  formData.append('chat_id', chatId);
+  formData.append('photo', blob, 'payment_proof.jpg');
+  
+  if (caption) {
+    formData.append('caption', caption);
+    formData.append('parse_mode', 'HTML');
+  }
+  
+  const url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
+  
+  return fetch(url, {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => {
+    console.log("Telegram sendPhoto API response status:", response.status);
+    return response.json();
+  })
+  .then(data => {
+    console.log("Telegram sendPhoto API response data:", data);
+    return data;
+  })
+  .catch(error => {
+    console.error('Error sending photo to Telegram:', error);
+    return { ok: false, error: error.message || "Network error" };
+  });
+}
+
 // Export functions for use in main script
 window.TelegramBot = {
   sendTelegramMessage,
   formatOrderForTelegram,
-  sendPaymentProofMessage
+  sendPaymentProofMessage,
+  sendImageToTelegram
 };
