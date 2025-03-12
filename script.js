@@ -446,6 +446,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupEventListeners() {
+  // Initialize order history count
+  updateOrderHistoryCount();
+  
   // Category buttons
   const categoryBtns = document.querySelectorAll('.category-btn');
   categoryBtns.forEach(btn => {
@@ -1216,6 +1219,9 @@ function saveOrderToHistory(orderData) {
 
   // Store back in localStorage
   localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+  
+  // Update the order history count badge
+  updateOrderHistoryCount();
 }
 
 // Show order history modal
@@ -1225,6 +1231,18 @@ function showOrderHistory() {
 
   // Display order history
   displayOrderHistory();
+}
+
+// Update order history count badge
+function updateOrderHistoryCount() {
+  const orderHistoryCountEl = document.getElementById('order-history-count');
+  const orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+  
+  if (orderHistoryCountEl) {
+    orderHistoryCountEl.textContent = orderHistory.length;
+    // Show badge only if there are orders
+    orderHistoryCountEl.style.display = orderHistory.length > 0 ? 'flex' : 'none';
+  }
 }
 
 // Display order history in the modal
