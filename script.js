@@ -1134,16 +1134,16 @@ function sendPaymentProofToTelegram(imageDataUrl) {
     return;
   }
   
-  // Format order message
-  const message = window.TelegramBot.formatOrderForTelegram(orderData);
+  // Instead of sending the full order again, just send the payment proof image with a simple caption
+  const caption = `💳 <b>Payment Proof</b> for Order #${orderData.orderNumber}`;
   
-  // Send the order message with payment proof
-  window.TelegramBot.sendPaymentProofMessage(botToken, chatId, message, imageDataUrl)
+  // Send just the payment proof image
+  window.TelegramBot.sendImageToTelegram(botToken, chatId, imageDataUrl, caption)
     .then(response => {
-      console.log("Order with payment notification sent successfully to Telegram");
+      console.log("Payment proof sent successfully to Telegram");
     })
     .catch(error => {
-      console.error("Error sending payment notification to Telegram:", error);
+      console.error("Error sending payment proof to Telegram:", error);
     });
 }
 
