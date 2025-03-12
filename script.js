@@ -774,7 +774,7 @@ function initMap() {
       // Options for better mobile support
       const options = {
         enableHighAccuracy: true, // Use GPS if available (especially important for mobile)
-        timeout: 10000,          // Wait up to 10 seconds
+        timeout: 20000,          // Wait up to 10 seconds
         maximumAge: 0            // Don't use cached position
       };
       
