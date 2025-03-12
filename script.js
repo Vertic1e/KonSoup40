@@ -1007,16 +1007,13 @@ function sendTelegramNotification(orderData) {
       console.log("Telegram notification sent successfully");
       
       // If this is a delivery order, send the location too
-      if (orderData.orderType === 'delivery' && orderData.location && orderData.location.lat && orderData.location.lng) {
-        window.TelegramBot.sendLocationToTelegram(botToken, chatId, orderData.location.lat, orderData.location.lng);
+      if (orderData.orderType === 'delivery' && orderData.customer.lat && orderData.customer.lng) {
+        window.TelegramBot.sendLocationToTelegram(botToken, chatId, orderData.customer.lat, orderData.customer.lng);
       }
     })
     .catch(error => {
       console.error("Error sending Telegram notification:", error);
-    });amMessage(botToken, chatId, message)
-    .then(response => {
-      if (response.ok) {
-        console.log('Telegram notification sent successfully');
+    });
         
         // Send location if it's a delivery order and we have coordinates
         if (orderData.orderType === 'delivery' && 
@@ -1158,10 +1155,7 @@ function sendPaymentProofToTelegram(imageDataUrl) {
     })
     .catch(error => {
       console.error("Error sending payment notification to Telegram:", error);
-    });sagesage for Telegram
-  const orderMessage = window.TelegramBot.formatOrderForTelegram(orderData);
-  
-  // Format payment message
+    });
   const paymentMessage = `🧾 <b>NEW ORDER WITH PAYMENT</b>\n\n📝 Order #<b>${orderData.orderNumber}</b> has been placed with payment proof attached.`;
   
   // Send the order details with payment notification to Telegram
