@@ -28,7 +28,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  flex: 1;
 }
 
 #logo-img {
@@ -40,10 +40,19 @@ header {
 }
 
 .header-icons {
-  position: absolute;
-  right: 60px;
   display: flex;
   align-items: center;
+  min-width: 60px;
+}
+
+.header-icons.left {
+  justify-content: flex-start;
+  margin-right: 60px;
+}
+
+.header-icons.right {
+  justify-content: flex-end;
+  margin-left: 60px;
 }
 
 .cart-icon, .order-history-icon {
