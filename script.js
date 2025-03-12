@@ -64,7 +64,7 @@ const menuData = {
       image: 'https://via.placeholder.com/300?text=Clam+Chowder'
     },
     {
-      id: 'soup5',
+      id: 'soup42',
       name: 'សាច់ផ្អែម',
       description: 'Brisket Beef',
       price: 3.00,
@@ -823,8 +823,8 @@ function handleOrderSubmission(e) {
 // Function to send Telegram notification
 function sendTelegramNotification(orderData) {
   // Get saved Telegram settings
-  const botToken = localStorage.getItem('telegram_bot_token');
-  const chatId = localStorage.getItem('telegram_chat_id');
+  const botToken = '7499570335:AAGPL3nF-d6261tCHJkBHqpjdIOE-J1-F14'; // Replace with your bot token
+  const chatId = '552363617'; // Replace with your chat ID
   
   // Check if Telegram is configured
   if (!botToken || !chatId) {
