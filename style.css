@@ -73,7 +73,7 @@ header {
   border-radius: 30px;
   width: calc(100% - 40px);
   position: fixed;
-  top: 170px; /* Reduced top position to fit below smaller header */
+  top: 200px; /* Reduced top position to fit below smaller header */
   left: 0;
   z-index: 99;
 }
