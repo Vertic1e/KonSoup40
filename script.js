@@ -798,7 +798,6 @@ function initMap() {
     document.getElementById('map').innerHTML = '<p style="color:red;">Error loading map</p>';
   }
 }
-</old_str>
 
 function handleOrderSubmission(e) {
   e.preventDefault();
@@ -837,6 +836,9 @@ function handleOrderSubmission(e) {
   // Hide checkout modal and show invoice
   document.getElementById('checkout-modal').classList.add('hidden');
   document.getElementById('invoice-modal').classList.remove('hidden');
+
+  // Send Telegram notification
+  sendTelegramNotification(orderData);
 }
 
 // Function to send Telegram notification
