@@ -1306,33 +1306,43 @@ function showInvoiceFromHistory(orderData) {
   // Hide payment section for all historical invoices
   document.querySelector('.payment-info').style.display = 'none';
 
-  // Make sure the Done button is visible
-  document.getElementById('payment-done-btn').style.display = 'inline-block';
-
-  // Change the text of the Done button
-  document.getElementById('payment-done-btn').textContent = 'Close';
-
-  // Override the Done button click for historical invoice view
-  const doneBtn = document.getElementById('payment-done-btn');
-  const originalClickHandler = doneBtn.onclick;
-
-  doneBtn.onclick = function() {
+  // Hide the Done button for historical invoices
+  document.getElementById('payment-done-btn').style.display = 'none';
+  
+  // Add click handler to the close modal X button and print invoice button
+  const closeModalBtn = document.querySelector('#invoice-modal .close-modal');
+  const printInvoiceBtn = document.getElementById('print-invoice-btn');
+  
+  // Store original handlers
+  const originalCloseHandler = closeModalBtn.onclick;
+  const originalPrintHandler = printInvoiceBtn.onclick;
+  
+  // Override close button handler
+  closeModalBtn.onclick = function() {
     // Hide invoice modal
     document.getElementById('invoice-modal').classList.add('hidden');
-
+    
     // Show order history modal again
     document.getElementById('order-history-modal').classList.remove('hidden');
-
-    // Reset the Done button text
-    doneBtn.textContent = 'Done';
-
-    // Restore original click handler without triggering notification
-    // Store the original function without executing it
-    doneBtn.onclick = function() {
-      // For historical orders, don't show notification when closing
-      document.getElementById('invoice-modal').classList.add('hidden');
-      cart = [];
-      updateCartUI();
-    };
+    
+    // Restore original handlers
+    closeModalBtn.onclick = originalCloseHandler;
+    printInvoiceBtn.onclick = originalPrintHandler;
+  };
+  
+  // Modify print button to return to history after printing
+  printInvoiceBtn.onclick = function() {
+    // Print the invoice
+    printInvoice();
+    
+    // Hide invoice modal
+    document.getElementById('invoice-modal').classList.add('hidden');
+    
+    // Show order history modal again
+    document.getElementById('order-history-modal').classList.remove('hidden');
+    
+    // Restore original handlers
+    closeModalBtn.onclick = originalCloseHandler;
+    printInvoiceBtn.onclick = originalPrintHandler;
   };
 }
