@@ -16,9 +16,14 @@
     <div class="logo">
       <img src="attached_assets/logo.jpg" alt="Logo" id="logo-img">
     </div>
-    <div class="cart-icon">
-      <i class="fas fa-shopping-cart"></i>
-      <span id="cart-count">0</span>
+    <div class="header-icons">
+      <div class="order-history-icon" id="order-history-btn">
+        <i class="fas fa-history"></i>
+      </div>
+      <div class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-count">0</span>
+      </div>
     </div>
   </header>
 
@@ -137,6 +142,17 @@
             <button id="payment-done-btn">Done</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="order-history-modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2>Your Order History</h2>
+      <div id="order-history-list">
+        <!-- Order history will be populated here -->
+        <p id="no-orders-message">You don't have any orders yet.</p>
       </div>
     </div>
   </div>

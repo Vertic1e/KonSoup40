@@ -79,22 +79,12 @@ function formatOrderForTelegram(order) {
 
 // Function to send payment proof notification
 function sendPaymentProofMessage(botToken, chatId, message, imageUrl) {
-  // First send the order message
-  return sendTelegramMessage(botToken, chatId, message)
-    .then(response => {
-      if (response.ok) {
-        console.log("Order notification sent successfully");
-        // If we have an image URL from a file upload
-        if (imageUrl && imageUrl.startsWith('data:image')) {
-          console.log("Image data received, sending actual image to Telegram");
-
-          // Send actual image to Telegram
-          return sendImageToTelegram(botToken, chatId, imageUrl, "💳 <b>Payment proof</b>");
-        }
-        return response;
-      }
-      return response;
-    });
+  // Just send the image without resending the order message
+  if (imageUrl && imageUrl.startsWith('data:image')) {
+    console.log("Image data received, sending actual image to Telegram");
+    return sendImageToTelegram(botToken, chatId, imageUrl, "💳 <b>Payment proof</b>");
+  }
+  return Promise.resolve({ ok: true });
 }
 
 // Function to send an image to Telegram

@@ -148,7 +148,7 @@ const menuData = {
       image: 'https://via.placeholder.com/300?text=Clam+Chowder'
     },
     {
-      id: 'soup21',
+      id: 'soup44',
       name: 'ប្រហិតសាច់គោ',
       description: 'Beef Ball',
       price: 3.75,
@@ -403,13 +403,6 @@ const menuData = {
       price: 2.99,
       image: 'https://via.placeholder.com/300?text=Sparkling+Water'
     },
-    {
-      id: 'drink3',
-      name: 'Fruit Smoothie',
-      description: 'Blended seasonal fruits',
-      price: 5.99,
-      image: 'https://via.placeholder.com/300?text=Smoothie'
-    },
   ]
   
 };
@@ -459,6 +452,9 @@ function setupEventListeners() {
   // Cart icon
   document.querySelector('.cart-icon').addEventListener('click', toggleCart);
   document.getElementById('close-cart-btn').addEventListener('click', toggleCart);
+  
+  // Order history button
+  document.getElementById('order-history-btn').addEventListener('click', showOrderHistory);
   
   // Checkout button
   document.getElementById('checkout-btn').addEventListener('click', showCheckoutModal);
@@ -773,6 +769,116 @@ function initMap() {
     if (navigator.geolocation) {
       // Options for better mobile support
       const options = {
+
+// Order History Functions
+
+// Save order to history in localStorage
+function saveOrderToHistory(orderData) {
+  // Get existing orders or initialize an empty array
+  let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+  
+  // Add the new order to the beginning of the array (most recent first)
+  orderHistory.unshift(orderData);
+  
+  // Store back in localStorage
+  localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+}
+
+// Show order history modal
+function showOrderHistory() {
+  const orderHistoryModal = document.getElementById('order-history-modal');
+  orderHistoryModal.classList.remove('hidden');
+  
+  // Display order history
+  displayOrderHistory();
+}
+
+// Display order history in the modal
+function displayOrderHistory() {
+  const orderHistoryList = document.getElementById('order-history-list');
+  const noOrdersMessage = document.getElementById('no-orders-message');
+  
+  // Get order history from localStorage
+  const orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+  
+  // Clear previous content
+  orderHistoryList.innerHTML = '';
+  
+  // Show message if no orders
+  if (orderHistory.length === 0) {
+    orderHistoryList.appendChild(noOrdersMessage);
+    return;
+  }
+  
+  // Create an element for each order
+  orderHistory.forEach(order => {
+    const orderEl = document.createElement('div');
+    orderEl.className = 'order-history-item';
+    orderEl.dataset.orderNumber = order.orderNumber;
+    
+    // Calculate total in riel
+    const totalRiel = Math.round(order.total * EXCHANGE_RATE);
+    
+    orderEl.innerHTML = `
+      <div class="order-history-header">
+        <span>Order #${order.orderNumber}</span>
+        <span>$${order.total.toFixed(2)} / ៛${totalRiel.toLocaleString()}</span>
+      </div>
+      <div class="order-history-details">
+        <div>${order.orderDate}</div>
+        <div>${order.items.length} items</div>
+        <div>${order.orderType === 'delivery' ? 'Delivery' : 'Pickup'}</div>
+      </div>
+    `;
+    
+    // Add click event to show invoice
+    orderEl.addEventListener('click', () => {
+      showInvoiceFromHistory(order);
+    });
+    
+    orderHistoryList.appendChild(orderEl);
+  });
+}
+
+// Show invoice from history
+function showInvoiceFromHistory(orderData) {
+  // Generate invoice with the stored order data
+  generateInvoice(orderData);
+  
+  // Hide order history modal
+  document.getElementById('order-history-modal').classList.add('hidden');
+  
+  // Show invoice modal
+  document.getElementById('invoice-modal').classList.remove('hidden');
+  
+  // Hide payment section for all historical invoices
+  document.querySelector('.payment-info').style.display = 'none';
+  
+  // Make sure the Done button is visible
+  document.getElementById('payment-done-btn').style.display = 'inline-block';
+  
+  // Change the text of the Done button
+  document.getElementById('payment-done-btn').textContent = 'Close';
+  
+  // Override the Done button click for historical invoice view
+  const doneBtn = document.getElementById('payment-done-btn');
+  const originalClickHandler = doneBtn.onclick;
+  
+  doneBtn.onclick = function() {
+    // Hide invoice modal
+    document.getElementById('invoice-modal').classList.add('hidden');
+    
+    // Show order history modal again
+    document.getElementById('order-history-modal').classList.remove('hidden');
+    
+    // Reset the Done button text
+    doneBtn.textContent = 'Done';
+    
+    // Restore original click handler
+    doneBtn.onclick = originalClickHandler;
+  };
+}
+
         enableHighAccuracy: true, // Use GPS if available (especially important for mobile)
         timeout: 20000,          // Wait up to 10 seconds
         maximumAge: 0            // Don't use cached position
@@ -965,6 +1071,9 @@ function handleOrderSubmission(e) {
   // Store order data in localStorage for later use with payment proof
   localStorage.setItem('currentOrder', JSON.stringify(orderData));
   
+  // Save order to order history
+  saveOrderToHistory(orderData);
+  
   // Generate invoice
   generateInvoice(orderData);
   
@@ -1004,24 +1113,21 @@ function sendTelegramNotification(orderData) {
   // Send the message to Telegram
   window.TelegramBot.sendTelegramMessage(botToken, chatId, message)
     .then(response => {
-      if (response.ok) {
-        console.log('Telegram notification sent successfully');
-        
-        // Send location if it's a delivery order and we have coordinates
-        if (orderData.orderType === 'delivery' && 
-            orderData.customer.lat && 
-            orderData.customer.lng) {
-          window.TelegramBot.sendLocationToTelegram(
-            botToken, 
-            chatId, 
-            orderData.customer.lat, 
-            orderData.customer.lng,
-            `📍 Delivery location for Order #${orderData.orderNumber}`
-          );
-        }
-      } else {
-        console.error('Failed to send Telegram notification:', response);
+      console.log("Telegram notification sent successfully");
+      
+      // If this is a delivery order, send the location too
+      if (orderData.orderType === 'delivery' && orderData.customer.lat && orderData.customer.lng) {
+        window.TelegramBot.sendLocationToTelegram(
+          botToken, 
+          chatId, 
+          orderData.customer.lat, 
+          orderData.customer.lng,
+          `📍 Delivery location for Order #${orderData.orderNumber}`
+        );
       }
+    })
+    .catch(error => {
+      console.error("Error sending Telegram notification:", error);
     });
 }
 
@@ -1121,8 +1227,8 @@ function handlePaymentUpload(event) {
 
 function sendPaymentProofToTelegram(imageDataUrl) {
   // Get saved Telegram settings
-  const botToken = localStorage.getItem('telegram_bot_token');
-  const chatId = localStorage.getItem('telegram_chat_id');
+  const botToken = '7499570335:AAGPL3nF-d6261tCHJkBHqpjdIOE-J1-F14'; // Hardcoded token for reliability
+  const chatId = '552363617'; // Hardcoded chat ID for reliability
   
   // Check if Telegram is configured
   if (!botToken || !chatId) {
@@ -1137,20 +1243,16 @@ function sendPaymentProofToTelegram(imageDataUrl) {
     return;
   }
   
-  // Format order message for Telegram
-  const orderMessage = window.TelegramBot.formatOrderForTelegram(orderData);
+  // Instead of sending the full order again, just send the payment proof image with a simple caption
+  const caption = `💳 <b>Payment Proof</b> for Order #${orderData.orderNumber}`;
   
-  // Format payment message
-  const paymentMessage = `🧾 <b>NEW ORDER WITH PAYMENT</b>\n\n📝 Order #<b>${orderData.orderNumber}</b> has been placed with payment proof attached.`;
-  
-  // Send the order details with payment notification to Telegram
-  window.TelegramBot.sendPaymentProofMessage(botToken, chatId, orderMessage, imageDataUrl)
+  // Send just the payment proof image
+  window.TelegramBot.sendImageToTelegram(botToken, chatId, imageDataUrl, caption)
     .then(response => {
-      if (response.ok) {
-        console.log('Order with payment notification sent successfully to Telegram');
-      } else {
-        console.error('Failed to send order with payment notification to Telegram:', response);
-      }
+      console.log("Payment proof sent successfully to Telegram");
+    })
+    .catch(error => {
+      console.error("Error sending payment proof to Telegram:", error);
     });
 }
 
