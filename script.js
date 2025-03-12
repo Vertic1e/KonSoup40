@@ -759,51 +759,110 @@ function initMap() {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     
-    // Try to get user's location for the map
+    // Show loading indicator
+    const mapElement = document.getElementById('map');
+    const locationLoadingDiv = document.createElement('div');
+    locationLoadingDiv.id = 'location-loading';
+    locationLoadingDiv.innerHTML = '<p style="text-align:center;padding:10px;background:rgba(255,255,255,0.8);position:absolute;z-index:1000;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:5px;">Detecting your location...</p>';
+    mapElement.appendChild(locationLoadingDiv);
+    
+    // Try to get user's location for the map with additional options for mobile
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          
-          // Update form values
-          document.getElementById('customer-lat').value = pos.lat;
-          document.getElementById('customer-lng').value = pos.lng;
-          
-          // Center map on user location
-          map.setView([pos.lat, pos.lng], 15);
-          
-          // Add marker for user location
+      // Options for better mobile support
+      const options = {
+        enableHighAccuracy: true, // Use GPS if available (especially important for mobile)
+        timeout: 10000,          // Wait up to 10 seconds
+        maximumAge: 0            // Don't use cached position
+      };
+      
+      const locationSuccess = (position) => {
+        // Remove loading indicator
+        const loadingElement = document.getElementById('location-loading');
+        if (loadingElement) loadingElement.remove();
+        
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        
+        // Update form values
+        document.getElementById('customer-lat').value = pos.lat;
+        document.getElementById('customer-lng').value = pos.lng;
+        
+        // Center map on user location
+        map.setView([pos.lat, pos.lng], 15);
+        
+        // Add marker for user location
+        if (userMarker) {
+          userMarker.setLatLng([pos.lat, pos.lng]);
+        } else {
           userMarker = L.marker([pos.lat, pos.lng], {
             title: 'Your Location'
           }).addTo(map);
-        },
-        (error) => {
-          console.error('Error getting location: ', error);
-          
-          // Set a fallback location if geolocation fails
-          document.getElementById('customer-lat').value = defaultLocation.lat;
-          document.getElementById('customer-lng').value = defaultLocation.lng;
-          
-          // Add marker for the default location
-          if (!userMarker) {
-            userMarker = L.marker([defaultLocation.lat, defaultLocation.lng], {
-              title: 'Default Location'
-            }).addTo(map);
-          } else {
-            userMarker.setLatLng([defaultLocation.lat, defaultLocation.lng]);
-          }
-          
-          // Inform the user
-          document.getElementById('map').insertAdjacentHTML('afterend', 
-            '<p style="color:orange;font-size:12px;margin-top:5px;">Unable to get your location. Using a default location instead.</p>');
         }
-      );
+        
+        // Add circle to show accuracy
+        const accuracyCircle = L.circle([pos.lat, pos.lng], {
+          radius: position.coords.accuracy,
+          color: '#4285F4',
+          fillColor: '#4285F4',
+          fillOpacity: 0.2
+        }).addTo(map);
+        
+        // Show success message
+        const successMsg = document.createElement('div');
+        successMsg.innerHTML = '<p style="color:green;font-size:12px;margin-top:5px;">✓ Your location was successfully detected</p>';
+        document.querySelector('#map').insertAdjacentElement('afterend', successMsg);
+      };
+      
+      const locationError = (error) => {
+        // Remove loading indicator
+        const loadingElement = document.getElementById('location-loading');
+        if (loadingElement) loadingElement.remove();
+        
+        console.error('Error getting location: ', error);
+        
+        // Set a fallback location if geolocation fails
+        document.getElementById('customer-lat').value = defaultLocation.lat;
+        document.getElementById('customer-lng').value = defaultLocation.lng;
+        
+        // Add marker for the default location
+        if (!userMarker) {
+          userMarker = L.marker([defaultLocation.lat, defaultLocation.lng], {
+            title: 'Default Location'
+          }).addTo(map);
+        } else {
+          userMarker.setLatLng([defaultLocation.lat, defaultLocation.lng]);
+        }
+        
+        // More helpful error message based on the error code
+        let errorMsg = 'Unable to get your location. Using a default location instead.';
+        
+        if (error.code === 1) {
+          errorMsg = 'Location access was denied. Please enable location permissions in your browser settings and try again.';
+        } else if (error.code === 2) {
+          errorMsg = 'Your location could not be determined. Please check your device GPS or try again later.';
+        } else if (error.code === 3) {
+          errorMsg = 'Location request timed out. Please try again.';
+        }
+        
+        // Inform the user with a more visible message
+        const errorElement = document.createElement('div');
+        errorElement.innerHTML = `<p style="color:#e74c3c;font-size:12px;margin-top:5px;padding:5px;border:1px solid #e74c3c;border-radius:3px;background:#fff4f4;">${errorMsg}</p>`;
+        document.querySelector('#map').insertAdjacentElement('afterend', errorElement);
+      };
+      
+      // Try to get location with the enhanced options
+      navigator.geolocation.getCurrentPosition(locationSuccess, locationError, options);
+      
     } else {
       // Geolocation not supported by browser
-      document.getElementById('map').innerHTML += '<p>Geolocation is not supported by your browser</p>';
+      const loadingElement = document.getElementById('location-loading');
+      if (loadingElement) loadingElement.remove();
+      
+      const noSupportMsg = document.createElement('div');
+      noSupportMsg.innerHTML = '<p style="color:red;font-size:12px;padding:5px;background:#fff4f4;border:1px solid red;border-radius:3px;">Geolocation is not supported by your browser. Please enter your address manually.</p>';
+      document.querySelector('#map').insertAdjacentElement('afterend', noSupportMsg);
       
       // Set default coordinates
       document.getElementById('customer-lat').value = defaultLocation.lat;
