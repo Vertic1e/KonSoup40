@@ -7,6 +7,7 @@
 
 body {
   background-color: #f5f5f5;
+  padding-top: 240px; /* Adjust based on your header height */
 }
 
 header {
@@ -16,6 +17,11 @@ header {
   padding: 20px;
   background-color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .logo {
@@ -66,6 +72,10 @@ header {
   margin: 20px;
   border-radius: 30px;
   width: calc(100% - 40px);
+  position: fixed;
+  top: 220px; /* Adjust based on header height */
+  left: 0;
+  z-index: 99;
 }
 
 .category-btn {
@@ -539,16 +549,34 @@ header {
 
 .invoice-footer {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.invoice-footer p {
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.invoice-footer .button-group {
+  display: flex;
   justify-content: center;
   gap: 10px;
-  margin-top: 20px;
 }
 
 @media (max-width: 768px) {
+  body {
+    padding-top: 190px; /* Smaller padding for mobile */
+  }
+  
   .category-nav {
     flex-wrap: wrap;
     padding: 10px;
     margin: 10px;
+    top: 170px; /* Adjust for smaller header on mobile */
   }
 
   .category-btn {
