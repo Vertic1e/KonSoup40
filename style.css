@@ -335,6 +335,13 @@ header {
   margin: 10px 0;
   border-radius: 5px;
   background-color: #eee;
+  z-index: 0; /* Ensures the map doesn't overlay other elements */
+}
+
+/* Fix for Leaflet controls */
+.leaflet-control-container .leaflet-top,
+.leaflet-control-container .leaflet-bottom {
+  z-index: 999;
 }
 
 #place-order-btn {

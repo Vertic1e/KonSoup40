@@ -744,28 +744,16 @@ function showCheckoutModal() {
 
 function initMap() {
   try {
-    // Default location (can be anywhere, will be updated)
-    const defaultLocation = { lat: 11.562108, lng: 104.888535 }; // Default to Phnom Penh coordinates
+    // Default location (Phnom Penh coordinates)
+    const defaultLocation = { lat: 11.562108, lng: 104.888535 };
     
-    // Check if google maps API loaded properly
-    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-      console.error('Google Maps API not loaded correctly');
-      document.getElementById('map').innerHTML = `
-        <div style="background-color:#f8f9fa; padding:15px; border-radius:5px; text-align:center;">
-          <p style="color:#dc3545; margin-bottom:10px;">Map unavailable</p>
-          <p style="font-size:12px; color:#6c757d;">The app will continue to function without the map.</p>
-        </div>`;
-      
-      // Set default coordinates so the order can still be placed
-      document.getElementById('customer-lat').value = defaultLocation.lat;
-      document.getElementById('customer-lng').value = defaultLocation.lng;
-      return;
-    }
+    // Initialize the map with default location
+    map = L.map('map').setView([defaultLocation.lat, defaultLocation.lng], 15);
     
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: defaultLocation,
-      zoom: 15
-    });
+    // Add the OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
     
     // Try to get user's location for the map
     if (navigator.geolocation) {
@@ -776,38 +764,32 @@ function initMap() {
             lng: position.coords.longitude
           };
           
-          // Update form
+          // Update form values
           document.getElementById('customer-lat').value = pos.lat;
           document.getElementById('customer-lng').value = pos.lng;
           
-          // Center map
-          map.setCenter(pos);
+          // Center map on user location
+          map.setView([pos.lat, pos.lng], 15);
           
-          // Add marker
-          userMarker = new google.maps.Marker({
-            position: pos,
-            map: map,
+          // Add marker for user location
+          userMarker = L.marker([pos.lat, pos.lng], {
             title: 'Your Location'
-          });
+          }).addTo(map);
         },
         (error) => {
           console.error('Error getting location: ', error);
+          
           // Set a fallback location if geolocation fails
           document.getElementById('customer-lat').value = defaultLocation.lat;
           document.getElementById('customer-lng').value = defaultLocation.lng;
           
-          // Update the map with the default location
-          map.setCenter(defaultLocation);
-          
           // Add marker for the default location
           if (!userMarker) {
-            userMarker = new google.maps.Marker({
-              position: defaultLocation,
-              map: map,
+            userMarker = L.marker([defaultLocation.lat, defaultLocation.lng], {
               title: 'Default Location'
-            });
+            }).addTo(map);
           } else {
-            userMarker.setPosition(defaultLocation);
+            userMarker.setLatLng([defaultLocation.lat, defaultLocation.lng]);
           }
           
           // Inform the user
@@ -818,10 +800,44 @@ function initMap() {
     } else {
       // Geolocation not supported by browser
       document.getElementById('map').innerHTML += '<p>Geolocation is not supported by your browser</p>';
+      
+      // Set default coordinates
+      document.getElementById('customer-lat').value = defaultLocation.lat;
+      document.getElementById('customer-lng').value = defaultLocation.lng;
+      
+      // Add marker for default location
+      userMarker = L.marker([defaultLocation.lat, defaultLocation.lng], {
+        title: 'Default Location'
+      }).addTo(map);
     }
+    
+    // Add click event to the map to update marker position
+    map.on('click', function(e) {
+      const clickedPos = e.latlng;
+      
+      // Update form values
+      document.getElementById('customer-lat').value = clickedPos.lat;
+      document.getElementById('customer-lng').value = clickedPos.lng;
+      
+      // Update marker position
+      if (userMarker) {
+        userMarker.setLatLng(clickedPos);
+      } else {
+        userMarker = L.marker(clickedPos).addTo(map);
+      }
+    });
+    
   } catch (error) {
     console.error('Map initialization error:', error);
-    document.getElementById('map').innerHTML = '<p style="color:red;">Error loading map</p>';
+    document.getElementById('map').innerHTML = `
+      <div style="background-color:#f8f9fa; padding:15px; border-radius:5px; text-align:center;">
+        <p style="color:#dc3545; margin-bottom:10px;">Map unavailable</p>
+        <p style="font-size:12px; color:#6c757d;">The app will continue to function without the map.</p>
+      </div>`;
+    
+    // Set default coordinates so the order can still be placed
+    document.getElementById('customer-lat').value = defaultLocation.lat;
+    document.getElementById('customer-lng').value = defaultLocation.lng;
   }
 }
 
