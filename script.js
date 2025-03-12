@@ -1008,28 +1008,17 @@ function sendTelegramNotification(orderData) {
       
       // If this is a delivery order, send the location too
       if (orderData.orderType === 'delivery' && orderData.customer.lat && orderData.customer.lng) {
-        window.TelegramBot.sendLocationToTelegram(botToken, chatId, orderData.customer.lat, orderData.customer.lng);
+        window.TelegramBot.sendLocationToTelegram(
+          botToken, 
+          chatId, 
+          orderData.customer.lat, 
+          orderData.customer.lng,
+          `📍 Delivery location for Order #${orderData.orderNumber}`
+        );
       }
     })
     .catch(error => {
       console.error("Error sending Telegram notification:", error);
-    });
-        
-        // Send location if it's a delivery order and we have coordinates
-        if (orderData.orderType === 'delivery' && 
-            orderData.customer.lat && 
-            orderData.customer.lng) {
-          window.TelegramBot.sendLocationToTelegram(
-            botToken, 
-            chatId, 
-            orderData.customer.lat, 
-            orderData.customer.lng,
-            `📍 Delivery location for Order #${orderData.orderNumber}`
-          );
-        }
-      } else {
-        console.error('Failed to send Telegram notification:', response);
-      }
     });
 }
 
@@ -1155,17 +1144,6 @@ function sendPaymentProofToTelegram(imageDataUrl) {
     })
     .catch(error => {
       console.error("Error sending payment notification to Telegram:", error);
-    });
-  const paymentMessage = `🧾 <b>NEW ORDER WITH PAYMENT</b>\n\n📝 Order #<b>${orderData.orderNumber}</b> has been placed with payment proof attached.`;
-  
-  // Send the order details with payment notification to Telegram
-  window.TelegramBot.sendPaymentProofMessage(botToken, chatId, orderMessage, imageDataUrl)
-    .then(response => {
-      if (response.ok) {
-        console.log('Order with payment notification sent successfully to Telegram');
-      } else {
-        console.error('Failed to send order with payment notification to Telegram:', response);
-      }
     });
 }
 
