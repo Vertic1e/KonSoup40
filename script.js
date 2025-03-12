@@ -498,7 +498,30 @@ function setupEventListeners() {
     // Reset cart and UI
     cart = [];
     updateCartUI();
+    
+    // Show in-app notification
+    showNotification("Thank you for your order! We'll process it right away.");
   });
+  
+  // Function to show in-app notification
+  function showNotification(message) {
+    // Create notification element if it doesn't exist
+    let notification = document.getElementById('app-notification');
+    if (!notification) {
+      notification = document.createElement('div');
+      notification.id = 'app-notification';
+      document.body.appendChild(notification);
+    }
+    
+    // Set message and show notification
+    notification.textContent = message;
+    notification.classList.add('show');
+    
+    // Hide notification after 3 seconds
+    setTimeout(function() {
+      notification.classList.remove('show');
+    }, 3000);
+  }
 
   // Always show the Done button next to Print Invoice
   document.getElementById('payment-done-btn').style.display = 'inline-block';
