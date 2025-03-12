@@ -1002,12 +1002,6 @@ function handleOrderSubmission(e) {
   // Generate invoice
   generateInvoice(orderData);
 
-  // Show appropriate notification based on order type
-  if (orderData.orderType === 'pickup') {
-    alert("We got your order, See you soon");
-  } else {
-    alert("We got your order, we will send a tracking link through your Telegram");
-  }
 
   // Hide checkout modal and show invoice
   document.getElementById('checkout-modal').classList.add('hidden');
