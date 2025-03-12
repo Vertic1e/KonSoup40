@@ -903,6 +903,15 @@ function handleOrderSubmission(e) {
   // Hide checkout modal and show invoice
   document.getElementById('checkout-modal').classList.add('hidden');
   document.getElementById('invoice-modal').classList.remove('hidden');
+  
+  // Hide payment section for pickup orders
+  if (orderData.orderType === 'pickup') {
+    document.querySelector('.payment-info').style.display = 'none';
+    document.getElementById('payment-done-btn').style.display = 'inline-block';
+  } else {
+    document.querySelector('.payment-info').style.display = 'block';
+    document.getElementById('payment-done-btn').style.display = 'none';
+  }
 
   // Send Telegram notification
   sendTelegramNotification(orderData);
