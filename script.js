@@ -736,6 +736,10 @@ function showCheckoutModal() {
     document.getElementById('cart-sidebar').classList.add('hidden');
   }
   
+  // Set delivery as default option
+  document.getElementById('delivery-option').checked = true;
+  toggleDeliveryAddressFields(true);
+  
   // Initialize map if it hasn't been done yet
   if (!map) {
     initMap();
@@ -841,15 +845,35 @@ function initMap() {
   }
 }
 
+// Function to toggle delivery address fields based on selected option
+function toggleDeliveryAddressFields(showFields) {
+  const addressFields = document.getElementById('delivery-address-fields');
+  if (addressFields) {
+    addressFields.style.display = showFields ? 'block' : 'none';
+  }
+}
+
 function handleOrderSubmission(e) {
   e.preventDefault();
   
   // Get form data
   const name = document.getElementById('customer-name').value;
   const phone = document.getElementById('customer-phone').value;
-  const address = document.getElementById('customer-address').value;
-  const lat = document.getElementById('customer-lat').value;
-  const lng = document.getElementById('customer-lng').value;
+  const orderType = document.querySelector('input[name="order-type"]:checked').value;
+  
+  // Set address based on order type
+  let address = '';
+  let lat = '';
+  let lng = '';
+  
+  if (orderType === 'delivery') {
+    address = document.getElementById('customer-address').value;
+    lat = document.getElementById('customer-lat').value;
+    lng = document.getElementById('customer-lng').value;
+  } else {
+    address = 'Pickup at restaurant';
+  }
+  
   const notes = document.getElementById('order-notes-input').value;
   
   // Generate order number
@@ -863,10 +887,11 @@ function handleOrderSubmission(e) {
   const orderData = {
     orderNumber,
     orderDate,
-    customer: { name, phone, address },
+    customer: { name, phone, address, lat, lng },
     items: cart,
     total,
-    notes
+    notes,
+    orderType: document.querySelector('input[name="order-type"]:checked').value
   };
   
   // Store order data in localStorage for later use with payment proof
@@ -903,6 +928,19 @@ function sendTelegramNotification(orderData) {
     .then(response => {
       if (response.ok) {
         console.log('Telegram notification sent successfully');
+        
+        // Send location if it's a delivery order and we have coordinates
+        if (orderData.customer.address !== 'Pickup at restaurant' && 
+            orderData.customer.lat && 
+            orderData.customer.lng) {
+          window.TelegramBot.sendLocationToTelegram(
+            botToken, 
+            chatId, 
+            orderData.customer.lat, 
+            orderData.customer.lng,
+            `📍 Delivery location for Order #${orderData.orderNumber}`
+          );
+        }
       } else {
         console.error('Failed to send Telegram notification:', response);
       }
