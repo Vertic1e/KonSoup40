@@ -148,7 +148,7 @@ const menuData = {
       image: 'https://via.placeholder.com/300?text=Clam+Chowder'
     },
     {
-      id: 'soup21',
+      id: 'soup44',
       name: 'ប្រហិតសាច់គោ',
       description: 'Beef Ball',
       price: 3.75,
@@ -402,13 +402,6 @@ const menuData = {
       description: 'Carbonated mineral water',
       price: 2.99,
       image: 'https://via.placeholder.com/300?text=Sparkling+Water'
-    },
-    {
-      id: 'drink3',
-      name: 'Fruit Smoothie',
-      description: 'Blended seasonal fruits',
-      price: 5.99,
-      image: 'https://via.placeholder.com/300?text=Smoothie'
     },
   ]
   
