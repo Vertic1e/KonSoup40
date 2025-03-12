@@ -1326,7 +1326,14 @@ function showInvoiceFromHistory(orderData) {
     // Reset the Done button text
     doneBtn.textContent = 'Done';
 
-    // Restore original click handler
-    doneBtn.onclick = originalClickHandler;
+    // Restore original click handler without triggering notification
+    // Store the original function without executing it
+    doneBtn.onclick = function() {
+      // For historical orders, don't show notification when closing
+      document.getElementById('invoice-modal').classList.add('hidden');
+      cart = [];
+      updateCartUI();
+    };
   };
+</old_str>
 }
