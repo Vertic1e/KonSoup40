@@ -7,6 +7,7 @@
 
 body {
   background-color: #f5f5f5;
+  padding-top: 280px; /* Increased padding to prevent content from being hidden */
 }
 
 header {
@@ -16,6 +17,11 @@ header {
   padding: 20px;
   background-color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .logo {
@@ -26,8 +32,8 @@ header {
 }
 
 #logo-img {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   border-radius: 40%;
   object-fit: contain;
   margin: 10px 0;
@@ -63,9 +69,13 @@ header {
   justify-content: space-around;
   padding: 10px 20px;
   background-color: #008f39;
-  margin: 20px;
+  margin: 10px 20px;
   border-radius: 30px;
   width: calc(100% - 40px);
+  position: fixed;
+  top: 200px; /* Reduced top position to fit below smaller header */
+  left: 0;
+  z-index: 99;
 }
 
 .category-btn {
@@ -539,16 +549,34 @@ header {
 
 .invoice-footer {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.invoice-footer p {
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.invoice-footer .button-group {
+  display: flex;
   justify-content: center;
   gap: 10px;
-  margin-top: 20px;
 }
 
 @media (max-width: 768px) {
+  body {
+    padding-top: 230px; /* Increased padding for mobile to prevent overlap */
+  }
+  
   .category-nav {
     flex-wrap: wrap;
     padding: 10px;
     margin: 10px;
+    top: 140px; /* Adjust for smaller header on mobile */
   }
 
   .category-btn {
