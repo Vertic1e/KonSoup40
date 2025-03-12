@@ -39,15 +39,19 @@ header {
   margin: 10px 0;
 }
 
-.cart-icon {
+.header-icons {
   position: absolute;
   right: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.cart-icon, .order-history-icon {
   font-size: 24px;
   cursor: pointer;
   color: #ff7700;
+  margin-left: 20px;
 }
-
-/* Settings icon removed */
 
 #cart-count {
   position: absolute;
@@ -565,6 +569,43 @@ header {
   display: flex;
   justify-content: center;
   gap: 10px;
+}
+
+/* Order History Styles */
+#order-history-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.order-history-item {
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.order-history-item:hover {
+  background-color: #f5f5f5;
+}
+
+.order-history-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.order-history-details {
+  color: #666;
+  font-size: 0.9em;
+}
+
+#no-orders-message {
+  text-align: center;
+  color: #666;
+  padding: 20px;
 }
 
 @media (max-width: 768px) {
