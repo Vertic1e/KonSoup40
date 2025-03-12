@@ -745,7 +745,7 @@ function showCheckoutModal() {
 function initMap() {
   try {
     // Default location (can be anywhere, will be updated)
-    const defaultLocation = { lat: -34.397, lng: 150.644 };
+    const defaultLocation = { lat: 11.562108, lng: 104.888535 }; // Default to Phnom Penh coordinates
     
     // Check if google maps API loaded properly
     if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
@@ -787,6 +787,24 @@ function initMap() {
           // Set a fallback location if geolocation fails
           document.getElementById('customer-lat').value = defaultLocation.lat;
           document.getElementById('customer-lng').value = defaultLocation.lng;
+          
+          // Update the map with the default location
+          map.setCenter(defaultLocation);
+          
+          // Add marker for the default location
+          if (!userMarker) {
+            userMarker = new google.maps.Marker({
+              position: defaultLocation,
+              map: map,
+              title: 'Default Location'
+            });
+          } else {
+            userMarker.setPosition(defaultLocation);
+          }
+          
+          // Inform the user
+          document.getElementById('map').insertAdjacentHTML('afterend', 
+            '<p style="color:orange;font-size:12px;margin-top:5px;">Unable to get your location. Using a default location instead.</p>');
         }
       );
     } else {
