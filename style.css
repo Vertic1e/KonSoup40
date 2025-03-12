@@ -68,7 +68,7 @@ header {
   display: flex;
   justify-content: space-around;
   padding: 10px 20px;
-  background-color: #008f39;
+  background-color: #ff7700;
   margin: 10px 20px;
   border-radius: 30px;
   width: calc(100% - 40px);
@@ -90,7 +90,7 @@ header {
 }
 
 .category-btn.active {
-  background-color: #006428;
+  background-color: #f86707;
   font-weight: bold;
 }
 
