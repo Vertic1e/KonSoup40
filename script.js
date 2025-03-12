@@ -492,6 +492,9 @@ function setupEventListeners() {
     updateCartUI();
   });
   
+  // Always show the Done button next to Print Invoice
+  document.getElementById('payment-done-btn').style.display = 'inline-block';
+  
   // Settings form
   document.getElementById('settings-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -736,6 +739,10 @@ function showCheckoutModal() {
     document.getElementById('cart-sidebar').classList.add('hidden');
   }
   
+  // Set delivery as default option
+  document.getElementById('delivery-option').checked = true;
+  toggleDeliveryAddressFields(true);
+  
   // Initialize map if it hasn't been done yet
   if (!map) {
     initMap();
@@ -744,76 +751,173 @@ function showCheckoutModal() {
 
 function initMap() {
   try {
-    // Default location (can be anywhere, will be updated)
-    const defaultLocation = { lat: 11.562108, lng: 104.888535 }; // Default to Phnom Penh coordinates
+    // Default location (Phnom Penh coordinates)
+    const defaultLocation = { lat: 11.562108, lng: 104.888535 };
     
-    // Check if google maps API loaded properly
-    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-      console.error('Google Maps API not loaded correctly');
-      document.getElementById('map').innerHTML = '<p style="color:red;">Unable to load map. Please try again later.</p>';
-      return;
-    }
+    // Initialize the map with default location
+    map = L.map('map').setView([defaultLocation.lat, defaultLocation.lng], 15);
     
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: defaultLocation,
-      zoom: 15
-    });
+    // Add the OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
     
-    // Try to get user's location for the map
+    // Show loading indicator
+    const mapElement = document.getElementById('map');
+    const locationLoadingDiv = document.createElement('div');
+    locationLoadingDiv.id = 'location-loading';
+    locationLoadingDiv.innerHTML = '<p style="text-align:center;padding:10px;background:rgba(255,255,255,0.8);position:absolute;z-index:1000;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:5px;">Detecting your location...</p>';
+    mapElement.appendChild(locationLoadingDiv);
+    
+    // Try to get user's location for the map with additional options for mobile
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          
-          // Update form
-          document.getElementById('customer-lat').value = pos.lat;
-          document.getElementById('customer-lng').value = pos.lng;
-          
-          // Center map
-          map.setCenter(pos);
-          
-          // Add marker
-          userMarker = new google.maps.Marker({
-            position: pos,
-            map: map,
+      // Options for better mobile support
+      const options = {
+        enableHighAccuracy: true, // Use GPS if available (especially important for mobile)
+        timeout: 20000,          // Wait up to 10 seconds
+        maximumAge: 0            // Don't use cached position
+      };
+      
+      const locationSuccess = (position) => {
+        // Remove loading indicator
+        const loadingElement = document.getElementById('location-loading');
+        if (loadingElement) loadingElement.remove();
+        
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        
+        // Update form values
+        document.getElementById('customer-lat').value = pos.lat;
+        document.getElementById('customer-lng').value = pos.lng;
+        
+        // Center map on user location
+        map.setView([pos.lat, pos.lng], 15);
+        
+        // Add marker for user location
+        if (userMarker) {
+          userMarker.setLatLng([pos.lat, pos.lng]);
+        } else {
+          userMarker = L.marker([pos.lat, pos.lng], {
             title: 'Your Location'
-          });
-        },
-        (error) => {
-          console.error('Error getting location: ', error);
-          // Set a fallback location if geolocation fails
-          document.getElementById('customer-lat').value = defaultLocation.lat;
-          document.getElementById('customer-lng').value = defaultLocation.lng;
-          
-          // Update the map with the default location
-          map.setCenter(defaultLocation);
-          
-          // Add marker for the default location
-          if (!userMarker) {
-            userMarker = new google.maps.Marker({
-              position: defaultLocation,
-              map: map,
-              title: 'Default Location'
-            });
-          } else {
-            userMarker.setPosition(defaultLocation);
-          }
-          
-          // Inform the user
-          document.getElementById('map').insertAdjacentHTML('afterend', 
-            '<p style="color:orange;font-size:12px;margin-top:5px;">Unable to get your location. Using a default location instead.</p>');
+          }).addTo(map);
         }
-      );
+        
+        // Add circle to show accuracy
+        const accuracyCircle = L.circle([pos.lat, pos.lng], {
+          radius: position.coords.accuracy,
+          color: '#4285F4',
+          fillColor: '#4285F4',
+          fillOpacity: 0.2
+        }).addTo(map);
+        
+        // Show success message
+        const successMsg = document.createElement('div');
+        successMsg.innerHTML = '<p style="color:green;font-size:12px;margin-top:5px;">✓ Your location was successfully detected</p>';
+        document.querySelector('#map').insertAdjacentElement('afterend', successMsg);
+      };
+      
+      const locationError = (error) => {
+        // Remove loading indicator
+        const loadingElement = document.getElementById('location-loading');
+        if (loadingElement) loadingElement.remove();
+        
+        console.error('Error getting location: ', error);
+        
+        // Set a fallback location if geolocation fails
+        document.getElementById('customer-lat').value = defaultLocation.lat;
+        document.getElementById('customer-lng').value = defaultLocation.lng;
+        
+        // Add marker for the default location
+        if (!userMarker) {
+          userMarker = L.marker([defaultLocation.lat, defaultLocation.lng], {
+            title: 'Default Location'
+          }).addTo(map);
+        } else {
+          userMarker.setLatLng([defaultLocation.lat, defaultLocation.lng]);
+        }
+        
+        // More helpful error message based on the error code
+        let errorMsg = 'Unable to get your location. Using a default location instead.';
+        
+        if (error.code === 1) {
+          errorMsg = 'Location access was denied. Please enable location permissions in your browser settings and try again.';
+        } else if (error.code === 2) {
+          errorMsg = 'Your location could not be determined. Please check your device GPS or try again later.';
+        } else if (error.code === 3) {
+          errorMsg = 'Location request timed out. Please try again.';
+        }
+        
+        // Inform the user with a more visible message
+        const errorElement = document.createElement('div');
+        errorElement.innerHTML = `<p style="color:#e74c3c;font-size:12px;margin-top:5px;padding:5px;border:1px solid #e74c3c;border-radius:3px;background:#fff4f4;">${errorMsg}</p>`;
+        document.querySelector('#map').insertAdjacentElement('afterend', errorElement);
+      };
+      
+      // Try to get location with the enhanced options
+      navigator.geolocation.getCurrentPosition(locationSuccess, locationError, options);
+      
     } else {
       // Geolocation not supported by browser
-      document.getElementById('map').innerHTML += '<p>Geolocation is not supported by your browser</p>';
+      const loadingElement = document.getElementById('location-loading');
+      if (loadingElement) loadingElement.remove();
+      
+      const noSupportMsg = document.createElement('div');
+      noSupportMsg.innerHTML = '<p style="color:red;font-size:12px;padding:5px;background:#fff4f4;border:1px solid red;border-radius:3px;">Geolocation is not supported by your browser. Please enter your address manually.</p>';
+      document.querySelector('#map').insertAdjacentElement('afterend', noSupportMsg);
+      
+      // Set default coordinates
+      document.getElementById('customer-lat').value = defaultLocation.lat;
+      document.getElementById('customer-lng').value = defaultLocation.lng;
+      
+      // Add marker for default location
+      userMarker = L.marker([defaultLocation.lat, defaultLocation.lng], {
+        title: 'Default Location'
+      }).addTo(map);
     }
+    
+    // Add click event to the map to update marker position
+    map.on('click', function(e) {
+      const clickedPos = e.latlng;
+      
+      // Update form values
+      document.getElementById('customer-lat').value = clickedPos.lat;
+      document.getElementById('customer-lng').value = clickedPos.lng;
+      
+      // Update marker position
+      if (userMarker) {
+        userMarker.setLatLng(clickedPos);
+      } else {
+        userMarker = L.marker(clickedPos).addTo(map);
+      }
+    });
+    
   } catch (error) {
     console.error('Map initialization error:', error);
-    document.getElementById('map').innerHTML = '<p style="color:red;">Error loading map</p>';
+    document.getElementById('map').innerHTML = `
+      <div style="background-color:#f8f9fa; padding:15px; border-radius:5px; text-align:center;">
+        <p style="color:#dc3545; margin-bottom:10px;">Map unavailable</p>
+        <p style="font-size:12px; color:#6c757d;">The app will continue to function without the map.</p>
+      </div>`;
+    
+    // Set default coordinates so the order can still be placed
+    document.getElementById('customer-lat').value = defaultLocation.lat;
+    document.getElementById('customer-lng').value = defaultLocation.lng;
+  }
+}
+
+// Function to toggle delivery address fields based on selected option
+function toggleDeliveryAddressFields(showFields) {
+  const addressFields = document.getElementById('delivery-address-fields');
+  if (addressFields) {
+    addressFields.style.display = showFields ? 'block' : 'none';
+    
+    // Make address field required only if delivery is selected
+    const addressInput = document.getElementById('customer-address');
+    if (addressInput) {
+      addressInput.required = showFields;
+    }
   }
 }
 
@@ -823,9 +927,21 @@ function handleOrderSubmission(e) {
   // Get form data
   const name = document.getElementById('customer-name').value;
   const phone = document.getElementById('customer-phone').value;
-  const address = document.getElementById('customer-address').value;
-  const lat = document.getElementById('customer-lat').value;
-  const lng = document.getElementById('customer-lng').value;
+  const orderType = document.querySelector('input[name="order-type"]:checked').value;
+  
+  // Set address based on order type
+  let address = '';
+  let lat = '';
+  let lng = '';
+  
+  if (orderType === 'delivery') {
+    address = document.getElementById('customer-address').value;
+    lat = document.getElementById('customer-lat').value;
+    lng = document.getElementById('customer-lng').value;
+  } else {
+    address = 'Pickup at restaurant';
+  }
+  
   const notes = document.getElementById('order-notes-input').value;
   
   // Generate order number
@@ -839,10 +955,11 @@ function handleOrderSubmission(e) {
   const orderData = {
     orderNumber,
     orderDate,
-    customer: { name, phone, address },
+    customer: { name, phone, address, lat, lng },
     items: cart,
     total,
-    notes
+    notes,
+    orderType: document.querySelector('input[name="order-type"]:checked').value
   };
   
   // Store order data in localStorage for later use with payment proof
@@ -854,6 +971,16 @@ function handleOrderSubmission(e) {
   // Hide checkout modal and show invoice
   document.getElementById('checkout-modal').classList.add('hidden');
   document.getElementById('invoice-modal').classList.remove('hidden');
+  
+  // Hide payment section for pickup orders
+  if (orderData.orderType === 'pickup') {
+    document.querySelector('.payment-info').style.display = 'none';
+  } else {
+    document.querySelector('.payment-info').style.display = 'block';
+  }
+  
+  // Always show Done button
+  document.getElementById('payment-done-btn').style.display = 'inline-block';
 
   // Send Telegram notification
   sendTelegramNotification(orderData);
@@ -879,6 +1006,19 @@ function sendTelegramNotification(orderData) {
     .then(response => {
       if (response.ok) {
         console.log('Telegram notification sent successfully');
+        
+        // Send location if it's a delivery order and we have coordinates
+        if (orderData.orderType === 'delivery' && 
+            orderData.customer.lat && 
+            orderData.customer.lng) {
+          window.TelegramBot.sendLocationToTelegram(
+            botToken, 
+            chatId, 
+            orderData.customer.lat, 
+            orderData.customer.lng,
+            `📍 Delivery location for Order #${orderData.orderNumber}`
+          );
+        }
       } else {
         console.error('Failed to send Telegram notification:', response);
       }
@@ -972,7 +1112,6 @@ function handlePaymentUpload(event) {
     const previewImg = document.getElementById('preview-image');
     previewImg.src = e.target.result;
     document.getElementById('payment-preview').style.display = 'block';
-    document.getElementById('payment-done-btn').style.display = 'inline-block';
     
     // Send payment proof to Telegram
     sendPaymentProofToTelegram(e.target.result);
