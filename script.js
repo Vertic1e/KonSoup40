@@ -743,43 +743,62 @@ function showCheckoutModal() {
 }
 
 function initMap() {
-  // Default location (can be anywhere, will be updated)
-  const defaultLocation = { lat: -34.397, lng: 150.644 };
-  
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: defaultLocation,
-    zoom: 15
-  });
-  
-  // Try to get user's location for the map
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        
-        // Update form
-        document.getElementById('customer-lat').value = pos.lat;
-        document.getElementById('customer-lng').value = pos.lng;
-        
-        // Center map
-        map.setCenter(pos);
-        
-        // Add marker
-        userMarker = new google.maps.Marker({
-          position: pos,
-          map: map,
-          title: 'Your Location'
-        });
-      },
-      () => {
-        console.error('Error getting location');
-      }
-    );
+  try {
+    // Default location (can be anywhere, will be updated)
+    const defaultLocation = { lat: -34.397, lng: 150.644 };
+    
+    // Check if google maps API loaded properly
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+      console.error('Google Maps API not loaded correctly');
+      document.getElementById('map').innerHTML = '<p style="color:red;">Unable to load map. Please try again later.</p>';
+      return;
+    }
+    
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: defaultLocation,
+      zoom: 15
+    });
+    
+    // Try to get user's location for the map
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          
+          // Update form
+          document.getElementById('customer-lat').value = pos.lat;
+          document.getElementById('customer-lng').value = pos.lng;
+          
+          // Center map
+          map.setCenter(pos);
+          
+          // Add marker
+          userMarker = new google.maps.Marker({
+            position: pos,
+            map: map,
+            title: 'Your Location'
+          });
+        },
+        (error) => {
+          console.error('Error getting location: ', error);
+          // Set a fallback location if geolocation fails
+          document.getElementById('customer-lat').value = defaultLocation.lat;
+          document.getElementById('customer-lng').value = defaultLocation.lng;
+        }
+      );
+    } else {
+      // Geolocation not supported by browser
+      document.getElementById('map').innerHTML += '<p>Geolocation is not supported by your browser</p>';
+    }
+  } catch (error) {
+    console.error('Map initialization error:', error);
+    document.getElementById('map').innerHTML = '<p style="color:red;">Error loading map</p>';
   }
 }
+</old_str>
 
 function handleOrderSubmission(e) {
   e.preventDefault();
