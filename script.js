@@ -850,6 +850,12 @@ function toggleDeliveryAddressFields(showFields) {
   const addressFields = document.getElementById('delivery-address-fields');
   if (addressFields) {
     addressFields.style.display = showFields ? 'block' : 'none';
+    
+    // Make address field required only if delivery is selected
+    const addressInput = document.getElementById('customer-address');
+    if (addressInput) {
+      addressInput.required = showFields;
+    }
   }
 }
 
