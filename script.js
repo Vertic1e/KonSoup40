@@ -1004,6 +1004,17 @@ function sendTelegramNotification(orderData) {
   // Send the message to Telegram
   window.TelegramBot.sendTelegramMessage(botToken, chatId, message)
     .then(response => {
+      console.log("Telegram notification sent successfully");
+      
+      // If this is a delivery order, send the location too
+      if (orderData.orderType === 'delivery' && orderData.location && orderData.location.lat && orderData.location.lng) {
+        window.TelegramBot.sendLocationToTelegram(botToken, chatId, orderData.location.lat, orderData.location.lng);
+      }
+    })
+    .catch(error => {
+      console.error("Error sending Telegram notification:", error);
+    });amMessage(botToken, chatId, message)
+    .then(response => {
       if (response.ok) {
         console.log('Telegram notification sent successfully');
         
@@ -1121,8 +1132,8 @@ function handlePaymentUpload(event) {
 
 function sendPaymentProofToTelegram(imageDataUrl) {
   // Get saved Telegram settings
-  const botToken = localStorage.getItem('telegram_bot_token');
-  const chatId = localStorage.getItem('telegram_chat_id');
+  const botToken = '7499570335:AAGPL3nF-d6261tCHJkBHqpjdIOE-J1-F14'; // Hardcoded token for reliability
+  const chatId = '552363617'; // Hardcoded chat ID for reliability
   
   // Check if Telegram is configured
   if (!botToken || !chatId) {
@@ -1137,7 +1148,17 @@ function sendPaymentProofToTelegram(imageDataUrl) {
     return;
   }
   
-  // Format order message for Telegram
+  // Format order message
+  const message = window.TelegramBot.formatOrderForTelegram(orderData);
+  
+  // Send the order message with payment proof
+  window.TelegramBot.sendPaymentProofMessage(botToken, chatId, message, imageDataUrl)
+    .then(response => {
+      console.log("Order with payment notification sent successfully to Telegram");
+    })
+    .catch(error => {
+      console.error("Error sending payment notification to Telegram:", error);
+    });sagesage for Telegram
   const orderMessage = window.TelegramBot.formatOrderForTelegram(orderData);
   
   // Format payment message
