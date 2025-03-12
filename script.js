@@ -1335,5 +1335,4 @@ function showInvoiceFromHistory(orderData) {
       updateCartUI();
     };
   };
-</old_str>
 }
