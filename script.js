@@ -750,7 +750,15 @@ function initMap() {
     // Check if google maps API loaded properly
     if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
       console.error('Google Maps API not loaded correctly');
-      document.getElementById('map').innerHTML = '<p style="color:red;">Unable to load map. Please try again later.</p>';
+      document.getElementById('map').innerHTML = `
+        <div style="background-color:#f8f9fa; padding:15px; border-radius:5px; text-align:center;">
+          <p style="color:#dc3545; margin-bottom:10px;">Map unavailable</p>
+          <p style="font-size:12px; color:#6c757d;">The app will continue to function without the map.</p>
+        </div>`;
+      
+      // Set default coordinates so the order can still be placed
+      document.getElementById('customer-lat').value = defaultLocation.lat;
+      document.getElementById('customer-lng').value = defaultLocation.lng;
       return;
     }
     
