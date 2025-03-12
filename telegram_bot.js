@@ -145,10 +145,46 @@ function sendImageToTelegram(botToken, chatId, imageDataUrl, caption) {
   });
 }
 
+// Function to send location to Telegram
+function sendLocationToTelegram(botToken, chatId, lat, lng, caption) {
+  if (!botToken || !chatId || !lat || !lng) {
+    return Promise.resolve({ ok: false, error: "Missing required parameters" });
+  }
+
+  const url = `https://api.telegram.org/bot${botToken}/sendLocation`;
+
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      chat_id: chatId,
+      latitude: lat,
+      longitude: lng,
+      caption: caption,
+      parse_mode: 'HTML'
+    })
+  })
+  .then(response => {
+    console.log("Telegram sendLocation API response status:", response.status);
+    return response.json();
+  })
+  .then(data => {
+    console.log("Telegram sendLocation API response data:", data);
+    return data;
+  })
+  .catch(error => {
+    console.error('Error sending location to Telegram:', error);
+    return { ok: false, error: error.message || "Network error" };
+  });
+}
+
 // Export functions for use in main script
 window.TelegramBot = {
   sendTelegramMessage,
   formatOrderForTelegram,
   sendPaymentProofMessage,
-  sendImageToTelegram
+  sendImageToTelegram,
+  sendLocationToTelegram
 };

@@ -530,14 +530,18 @@ header {
   cursor: pointer;
   transition: background-color 0.3s;
   margin: 5px;
+  display: inline-block;
 }
 
 #print-invoice-btn:hover, #payment-done-btn:hover {
   background-color: #006428;
 }
 
-#payment-done-btn {
-  display: none;
+.invoice-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 @media (max-width: 768px) {

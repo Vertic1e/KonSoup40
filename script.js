@@ -492,6 +492,9 @@ function setupEventListeners() {
     updateCartUI();
   });
   
+  // Always show the Done button next to Print Invoice
+  document.getElementById('payment-done-btn').style.display = 'inline-block';
+  
   // Settings form
   document.getElementById('settings-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -972,11 +975,12 @@ function handleOrderSubmission(e) {
   // Hide payment section for pickup orders
   if (orderData.orderType === 'pickup') {
     document.querySelector('.payment-info').style.display = 'none';
-    document.getElementById('payment-done-btn').style.display = 'inline-block';
   } else {
     document.querySelector('.payment-info').style.display = 'block';
-    document.getElementById('payment-done-btn').style.display = 'none';
   }
+  
+  // Always show Done button
+  document.getElementById('payment-done-btn').style.display = 'inline-block';
 
   // Send Telegram notification
   sendTelegramNotification(orderData);
@@ -1004,7 +1008,7 @@ function sendTelegramNotification(orderData) {
         console.log('Telegram notification sent successfully');
         
         // Send location if it's a delivery order and we have coordinates
-        if (orderData.customer.address !== 'Pickup at restaurant' && 
+        if (orderData.orderType === 'delivery' && 
             orderData.customer.lat && 
             orderData.customer.lng) {
           window.TelegramBot.sendLocationToTelegram(
@@ -1108,7 +1112,6 @@ function handlePaymentUpload(event) {
     const previewImg = document.getElementById('preview-image');
     previewImg.src = e.target.result;
     document.getElementById('payment-preview').style.display = 'block';
-    document.getElementById('payment-done-btn').style.display = 'inline-block';
     
     // Send payment proof to Telegram
     sendPaymentProofToTelegram(e.target.result);
