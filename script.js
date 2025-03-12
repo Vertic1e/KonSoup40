@@ -64,7 +64,7 @@ const menuData = {
       image: 'https://via.placeholder.com/300?text=Clam+Chowder'
     },
     {
-      id: 'soup5',
+      id: 'soup42',
       name: 'សាច់ផ្អែម',
       description: 'Brisket Beef',
       price: 3.00,
@@ -475,6 +475,104 @@ function setupEventListeners() {
   
   // Print invoice
   document.getElementById('print-invoice-btn').addEventListener('click', printInvoice);
+  
+  // Payment upload button
+  document.getElementById('trigger-upload-btn').addEventListener('click', function() {
+    document.getElementById('payment-proof').click();
+  });
+  
+  // Payment proof upload handling
+  document.getElementById('payment-proof').addEventListener('change', handlePaymentUpload);
+  
+  // Done button after payment
+  document.getElementById('payment-done-btn').addEventListener('click', function() {
+    document.getElementById('invoice-modal').classList.add('hidden');
+    // Reset cart and UI
+    cart = [];
+    updateCartUI();
+  });
+  
+  // Settings form
+  document.getElementById('settings-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    saveTelegramSettings();
+  });
+  
+  // Test Telegram button
+  document.getElementById('test-telegram-btn').addEventListener('click', testTelegramNotification);
+  
+  // Load saved Telegram settings
+  loadTelegramSettings();
+  
+  // Add settings button to header
+  addSettingsButton();
+}
+
+function addSettingsButton() {
+  // Settings button has been removed as requested
+}
+
+function showSettingsModal() {
+  document.getElementById('settings-modal').classList.remove('hidden');
+}
+
+function saveTelegramSettings() {
+  const botToken = document.getElementById('telegram-bot-token').value;
+  const chatId = document.getElementById('telegram-chat-id').value;
+  
+  localStorage.setItem('telegram_bot_token', botToken);
+  localStorage.setItem('telegram_chat_id', chatId);
+  
+  alert('Settings saved successfully!');
+}
+
+function loadTelegramSettings() {
+  const botToken = localStorage.getItem('telegram_bot_token') || '';
+  const chatId = localStorage.getItem('telegram_chat_id') || '';
+  
+  document.getElementById('telegram-bot-token').value = botToken;
+  document.getElementById('telegram-chat-id').value = chatId;
+}
+
+function testTelegramNotification() {
+  const botToken = document.getElementById('telegram-bot-token').value;
+  const chatId = document.getElementById('telegram-chat-id').value;
+  
+  if (!botToken || !chatId) {
+    alert('Please enter both Telegram Bot Token and Chat ID before testing');
+    return;
+  }
+  
+  // Show testing indicator
+  const testButton = document.getElementById('test-telegram-btn');
+  const originalText = testButton.textContent;
+  testButton.textContent = "Testing...";
+  testButton.disabled = true;
+  
+  const testMessage = '🔔 <b>TEST NOTIFICATION</b>\n\nThis is a test message from your Restaurant Order System. If you can see this, your Telegram notifications are working correctly!';
+  
+  window.TelegramBot.sendTelegramMessage(botToken, chatId, testMessage)
+    .then(response => {
+      testButton.textContent = originalText;
+      testButton.disabled = false;
+      
+      if (response.ok) {
+        alert('Test notification sent successfully! Check your Telegram.');
+      } else {
+        let errorMessage = 'Failed to send test notification. ';
+        
+        if (response.description) {
+          errorMessage += response.description;
+        } else if (response.error) {
+          errorMessage += response.error;
+        } else {
+          errorMessage += 'Please check your token and chat ID.';
+        }
+        
+        alert(errorMessage);
+        console.error('Telegram test failed:', response);
+      }
+    });
 }
 
 function displayMenuItems(category) {
@@ -701,19 +799,51 @@ function handleOrderSubmission(e) {
   // Calculate total
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
-  // Generate invoice
-  generateInvoice({
+  // Create order object
+  const orderData = {
     orderNumber,
     orderDate,
     customer: { name, phone, address },
     items: cart,
     total,
     notes
-  });
+  };
+  
+  // Store order data in localStorage for later use with payment proof
+  localStorage.setItem('currentOrder', JSON.stringify(orderData));
+  
+  // Generate invoice
+  generateInvoice(orderData);
   
   // Hide checkout modal and show invoice
   document.getElementById('checkout-modal').classList.add('hidden');
   document.getElementById('invoice-modal').classList.remove('hidden');
+}
+
+// Function to send Telegram notification
+function sendTelegramNotification(orderData) {
+  // Get saved Telegram settings
+  const botToken = '7499570335:AAGPL3nF-d6261tCHJkBHqpjdIOE-J1-F14'; // Replace with your bot token
+  const chatId = '552363617'; // Replace with your chat ID
+  
+  // Check if Telegram is configured
+  if (!botToken || !chatId) {
+    console.warn('Telegram notification not sent: Bot token or Chat ID not configured');
+    return;
+  }
+  
+  // Format the order data for Telegram
+  const message = window.TelegramBot.formatOrderForTelegram(orderData);
+  
+  // Send the message to Telegram
+  window.TelegramBot.sendTelegramMessage(botToken, chatId, message)
+    .then(response => {
+      if (response.ok) {
+        console.log('Telegram notification sent successfully');
+      } else {
+        console.error('Failed to send Telegram notification:', response);
+      }
+    });
 }
 
 function generateInvoice(order) {
@@ -791,6 +921,59 @@ function printInvoice() {
   printWindow.focus();
   printWindow.print();
   printWindow.close();
+}
+
+function handlePaymentUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  // Show preview of uploaded payment proof
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const previewImg = document.getElementById('preview-image');
+    previewImg.src = e.target.result;
+    document.getElementById('payment-preview').style.display = 'block';
+    document.getElementById('payment-done-btn').style.display = 'inline-block';
+    
+    // Send payment proof to Telegram
+    sendPaymentProofToTelegram(e.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+function sendPaymentProofToTelegram(imageDataUrl) {
+  // Get saved Telegram settings
+  const botToken = localStorage.getItem('telegram_bot_token');
+  const chatId = localStorage.getItem('telegram_chat_id');
+  
+  // Check if Telegram is configured
+  if (!botToken || !chatId) {
+    console.warn('Telegram notification not sent: Bot token or Chat ID not configured');
+    return;
+  }
+  
+  // Get the current order data from localStorage
+  const orderData = JSON.parse(localStorage.getItem('currentOrder'));
+  if (!orderData) {
+    console.error('Order data not found');
+    return;
+  }
+  
+  // Format order message for Telegram
+  const orderMessage = window.TelegramBot.formatOrderForTelegram(orderData);
+  
+  // Format payment message
+  const paymentMessage = `🧾 <b>NEW ORDER WITH PAYMENT</b>\n\n📝 Order #<b>${orderData.orderNumber}</b> has been placed with payment proof attached.`;
+  
+  // Send the order details with payment notification to Telegram
+  window.TelegramBot.sendPaymentProofMessage(botToken, chatId, orderMessage, imageDataUrl)
+    .then(response => {
+      if (response.ok) {
+        console.log('Order with payment notification sent successfully to Telegram');
+      } else {
+        console.error('Failed to send order with payment notification to Telegram:', response);
+      }
+    });
 }
 
 // Function to add new items to the menu
