@@ -23,7 +23,7 @@ const menuData = {
       name: 'ឈុតសាច់អាំង',
       description: 'BBQ Set',
       price: 9.75,
-      image: 'attached_assets/Set image/BBQ set.png'
+      image: 'attached_assets/BBQ set.png'
     }
   ],
   soup: [
@@ -481,38 +481,39 @@ const menuData = {
   drink: [
     {
       id: 'drink1',
-      name: 'Fresh Lemonade',
-      description: 'Homemade lemonade with mint',
-      price: 4.99,
-      image: 'https://via.placeholder.com/300?text=Lemonade'
+      name: 'Coke',
+      price: 0.75,
+      image: 'attached_assets/Coke.jpg'
     },
     {
       id: 'drink2',
-      name: 'Iced Tea',
-      description: 'Refreshing iced tea with lemon',
-      price: 3.99,
-      image: 'https://via.placeholder.com/300?text=Iced+Tea'
+      name: 'Lemon Iced Tea',
+      price: 1.25,
+      image: 'attached_assets/Chinese Leomon Tea.jpg'
     },
     {
       id: 'drink3',
-      name: 'Fruit Smoothie',
-      description: 'Blended seasonal fruits',
-      price: 5.99,
-      image: 'https://via.placeholder.com/300?text=Smoothie'
+      name: 'Mixed Fruit Tea',
+      price: 1.25,
+      image: 'attached_assets/Chinese mix fruit.jpg'
     },
     {
       id: 'drink4',
-      name: 'Sparkling Water',
-      description: 'Carbonated mineral water',
-      price: 2.99,
-      image: 'https://via.placeholder.com/300?text=Sparkling+Water'
+      name: 'Vigor',
+      price: 1.00,
+      image: 'attached_assets/Vigor.jpg'
     },
     {
       id: 'drink5',
-      name: 'Berry Smoothie',
-      description: 'Blended mixed berries',
-      price: 5.99,
-      image: 'https://via.placeholder.com/300?text=Berry+Smoothie'
+      name: 'Sprite',
+      price: 0.75,
+      image: 'attached_assets/Sprite.jpg'
+    },
+    {
+      id: 'drink6',
+      name: 'Vital',
+      price: 0.375,
+      image: 'attached_assets/Vital.jpg'
     }
   ]
 };
