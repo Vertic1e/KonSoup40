@@ -723,7 +723,7 @@ function displayMenuItems(category) {
     // Use a static placeholder for items without an image or with placeholder URLs
     const imageSrc = (item.image && !item.image.includes('placeholder.com')) 
       ? item.image 
-      : `https://dummyimage.com/300x200/f0f0f0/666666.jpg&text=${encodeURIComponent(item.name)}`;
+      : `attached_assets/logo.jpg`;
 
     menuItemEl.innerHTML = `
       <img src="${imageSrc}" alt="${item.name}" class="item-image">
