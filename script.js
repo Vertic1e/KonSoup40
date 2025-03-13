@@ -719,9 +719,14 @@ function displayMenuItems(category) {
     menuItemEl.className = 'menu-item';
     // Calculate price in riel
     const rielPrice = Math.round(item.price * EXCHANGE_RATE);
+    
+    // Use a static placeholder for items without an image or with placeholder URLs
+    const imageSrc = (item.image && !item.image.includes('placeholder.com')) 
+      ? item.image 
+      : `https://dummyimage.com/300x200/f0f0f0/666666.jpg&text=${encodeURIComponent(item.name)}`;
 
     menuItemEl.innerHTML = `
-      <img src="${item.image}" alt="${item.name}" class="item-image">
+      <img src="${imageSrc}" alt="${item.name}" class="item-image">
       <div class="item-details">
         <div class="item-name">${item.name}</div>
         <div class="item-description">${item.description}</div>
