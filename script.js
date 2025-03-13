@@ -60,42 +60,42 @@ const menuData = {
       name: 'សាច់ភ្លៅ',
       description: 'Lean Beef',
       price: 2.5,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/សាច់ភ្លៅ.JPG'
     },
     {
       id: 'soup6',
       name: 'សាច់ផ្អែម',
       description: 'Brisket Beef',
       price: 3.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/សាច់ផ្អែម.JPG'
     },
     {
       id: 'soup7',
       name: 'សាច់ស្រួយ',
       description: 'Flank Beef',
       price: 3.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/សាច់ស្រួយ.JPG'
     },
     {
       id: 'soup8',
       name: 'ប្រហិតត្រី',
       description: 'Fresh Fish Ball',
       price: 2.5,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8339.JPG'
     },
     {
       id: 'soup9',
       name: 'ខួរគោ',
       description: 'Ox Brain',
       price: 5.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/ខួរ.JPG'
     },
     {
       id: 'soup10',
       name: '100ស្រទាប់',
       description: 'Vessels',
       price: 5.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/១០០ ស្រទាប់.JPG'
     },
     {
       id: 'soup11',
@@ -109,28 +109,28 @@ const menuData = {
       name: 'សាច់បាង',
       description: 'Bang Meat',
       price: 3.75,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/សាច់បាង.JPG'
     },
     {
       id: 'soup13',
       name: 'បេះដូង',
       description: 'Ox Heart',
       price: 3.75,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/បេះដូង.JPG'
     },
     {
       id: 'soup14',
       name: 'អណ្តាត',
       description: 'Ox Tongue',
       price: 3.75,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/អណ្តាត.JPG'
     },
     {
       id: 'soup15',
       name: 'សរសៃ',
       description: 'Ox Foot Gelatin',
       price: 3.75,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/សសៃ.JPG'
     },
     {
       id: 'soup16',
@@ -144,28 +144,28 @@ const menuData = {
       name: 'ពោះ',
       description: 'Ox Stomach',
       price: 3.75,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/ពោះ.JPG'
     },
     {
       id: 'soup18',
       name: 'ប្រហិតសាច់គោ',
       description: 'Beef Ball',
       price: 3.75,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/ប្រហិតសាច់គោ.JPG'
     },
     {
       id: 'soup19',
       name: 'បង្គា',
       description: 'Prawn',
       price: 6.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/បង្គា.JPG'
     },
     {
       id: 'soup20',
       name: 'មឹក',
       description: 'Squid',
       price: 6.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/មឹក.JPG'
     },
     {
       id: 'soup21',
@@ -186,28 +186,28 @@ const menuData = {
       name: 'មីលឿង',
       description: 'Egg Noodle',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8336.JPG'
     },
     {
       id: 'soup24',
       name: 'មីខៀវ',
       description: 'Green Noodle',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8334.JPG'
     },
     {
       id: 'soup25',
       name: 'មី MAMA',
       description: 'MAMA Noodle',
       price: 0.375,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8333.JPG'
     },
     {
       id: 'soup26',
       name: 'គុយទាវ',
       description: 'Rice Noodle',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8355.JPG'
     },
     {
       id: 'soup27',
@@ -221,49 +221,49 @@ const menuData = {
       name: 'ពងមាន់',
       description: 'Egg',
       price: 0.25,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8340.JPG'
     },
     {
       id: 'soup29',
       name: 'ផ្សិតម្ជុល',
       description: 'Needle Mushroom',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8304.JPG'
     },
     {
       id: 'soup30',
       name: 'ផ្សិតភ្លៅមាន់',
       description: 'Chicken Leg Mushroom',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8299.JPG'
     },
     {
       id: 'soup31',
       name: 'ស្ពៃតឿ',
       description: 'Bok Choy',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8316.JPG'
     },
     {
       id: 'soup32',
       name: 'ត្រកួន',
       description: 'Water Spinach',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8318.JPG'
     },
     {
       id: 'soup33',
       name: 'តាំងអោ',
       description: 'Green Chrysanthemum',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8330.JPG'
     },
     {
       id: 'soup34',
       name: 'ស្ពៃចង្កឺៈ',
       description: 'Collard Greens and Herbs',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8332.JPG'
     },
     {
       id: 'soup35',
@@ -277,108 +277,206 @@ const menuData = {
       name: 'ស្ពៃបូកគោ',
       description: 'Baby Napa Cabbage',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8323.JPG'
     },
     {
       id: 'soup37',
       name: 'ពោត',
       description: 'Corn',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8301.JPG'
     },
     {
       id: 'soup38',
       name: 'ស្នៀតពោត',
       description: 'Baby Corn',
       price: 1.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8314.JPG'
     },
     {
       id: 'soup39',
       name: 'ពោតបារាំង',
       description: 'Okra',
       price: 0.625,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8309.JPG'
     },
     {
       id: 'soup40',
       name: 'ត្រាវ',
       description: 'Taro',
       price: 1.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8312.JPG'
     },
     {
       id: 'soup41',
       name: 'ពពុៈសណ្តែក',
       description: 'Dried Bean Curd',
       price: 1.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8307.JPG'
     },
     {
       id: 'soup42',
       name: 'ផ្កាថ្ម',
       description: 'Snow Fungus',
       price: 1.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8335.JPG'
     },
     {
       id: 'soup43',
       name: 'ប្រហិតត្រីចៀន',
       description: 'Fried Fish Ball',
       price: 1.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8311.JPG'
     },
     {
       id: 'soup45',
       name: 'ប្រហិតក្តាម',
       description: 'Crab Fish Ball',
       price: 1.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8297.JPG'
     },
     {
       id: 'soup46',
       name: 'ប្រហិតតៅហ៊ូ',
       description: 'Tofu Ball',
       price: 1.00,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+      image: 'attached_assets/IMG_8303.JPG'
     },
     {
-      id: 'soup44',
-      name: 'ប្រហិតសាច់គោ',
-      description: 'Beef Ball',
-      price: 3.75,
-      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
-    }
+      id: 'soup47',
+      name: 'ហតដក',
+      description: 'Hot dog',
+      price: 1.00,
+      image: 'attached_assets/IMG_8337.JPG'
+    },
+    {
+      id: 'soup48',
+      name: 'ប្រហិតនំប់់ាវ',
+      description: 'Pork Filled Ball',
+      price: 1.00,
+      image: 'attached_assets/IMG_8306.JPG'
+    },
+    {
+      id: 'soup49',
+      name: 'ប្រហិតស្នូលក្តាម',
+      description: 'Crab x Fish Ball',
+      price: 1.00,
+      image: 'attached_assets/IMG_8313.JPG'
+    },
+    {
+      id: 'soup50',
+      name: 'ប្រហិតត្រី',
+      description: 'Fish Ball',
+      price: 1.00,
+      image: 'attached_assets/IMG_8300.JPG'
+    },
   ],
   bbq: [
     {
-      id: 'meat1',
-      name: 'Grilled Steak',
-      description: 'Prime beef steak grilled to perfection',
-      price: 24.99,
-      image: 'https://via.placeholder.com/300?text=Steak'
+      id: 'bbq1',
+      name: 'សាច់ផ្អែម',
+      description: 'Brisket Beef',
+      price: 6.00,
+      image: 'attached_assets/សាច់ផ្អែមភ្នំភ្លើង.JPG'
     },
     {
-      id: 'meat2',
-      name: 'Roast Chicken',
-      description: 'Whole roasted chicken with herbs',
-      price: 18.99,
-      image: 'https://via.placeholder.com/300?text=Chicken'
+      id: 'bbq2',
+      name: 'សាច់ស្រួយ',
+      description: 'Flank Beef',
+      price: 7.00,
+      image: 'attached_assets/សាច់ស្រួយភ្នំភ្លើង.JPG'
     },
     {
-      id: 'meat3',
-      name: 'BBQ Ribs',
-      description: 'Tender pork ribs with BBQ sauce',
-      price: 22.99,
-      image: 'https://via.placeholder.com/300?text=Ribs'
+      id: 'bbq3',
+      name: 'សាច់ជ្រូក',
+      description: 'Prok',
+      price: 6.00,
+      image: 'attached_assets/សាច់ជ្រូកបីជាន់ភ្នំភ្លើង.JPG'
     },
     {
-      id: 'meat4',
-      name: 'Lamb Chops',
-      description: 'Grilled lamb chops with rosemary',
-      price: 26.99,
-      image: 'https://via.placeholder.com/300?text=Lamb'
-    }
+      id: 'bbq4',
+      name: 'មឹក',
+      description: 'Squid',
+      price: 6.00,
+      image: 'attached_assets/មឹក.JPG'
+    },
+    {
+      id: 'bbq5',
+      name: 'បង្គា',
+      description: 'Prawn',
+      price: 6.00,
+      image: 'attached_assets/បង្គា.JPG'
+    },
+    {
+      id: 'bbq15',
+      name: 'ក្រលៀន',
+      description: 'Kidney',
+      price: 6.00,
+      image: 'https://via.placeholder.com/300?text=Clam+Chowder'
+    },
+    {
+      id: 'bbq6',
+      name: 'ពងមាន់',
+      description: 'Egg',
+      price: 0.25,
+      image: 'attached_assets/IMG_8340.JPG'
+    },
+    {
+      id: 'bbq7',
+      name: 'ផ្សិតម្ជុល',
+      description: 'Needle Mushroom',
+      price: 0.625,
+      image: 'attached_assets/IMG_8304.JPG'
+    },
+    {
+      id: 'bbq8',
+      name: 'ផ្សិតភ្លៅមាន់',
+      description: 'Chicken Leg Mushroom',
+      price: 0.625,
+      image: 'attached_assets/IMG_8299.JPG'
+    },
+    {
+      id: 'bbq9',
+      name: 'ត្រកួន',
+      description: 'Water Spinach',
+      price: 0.625,
+      image: 'attached_assets/IMG_8318.JPG'
+    },
+    {
+      id: 'bbq10',
+      name: 'ស្ពៃបូកគោ',
+      description: 'Baby Napa Cabbage',
+      price: 0.625,
+      image: 'attached_assets/IMG_8323.JPG'
+    },
+    {
+      id: 'bbq14',
+      name: 'កាញឆែត',
+      description: 'Water Mimosa',
+      price: 1.00,
+      image: 'attached_assets/IMG_8377.JPG'
+    },
+    {
+      id: 'bbq11',
+      name: 'ស្នៀតពោត',
+      description: 'Baby Corn',
+      price: 1.00,
+      image: 'attached_assets/IMG_8314.JPG'
+    },
+    {
+      id: 'bbq12',
+      name: 'ពោតបារាំង',
+      description: 'Okra',
+      price: 0.625,
+      image: 'attached_assets/IMG_8309.JPG'
+    },
+    {
+      id: 'bbq13', //skip to bbq16
+      name: 'ហតដក',
+      description: 'Hot dog',
+      price: 1.00,
+      image: 'attached_assets/IMG_8337.JPG'
+    }  
   ],
   drink: [
     {
