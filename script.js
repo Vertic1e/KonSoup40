@@ -482,36 +482,42 @@ const menuData = {
     {
       id: 'drink1',
       name: 'Coke',
+      description: 'Drink',
       price: 0.75,
       image: 'attached_assets/Coke.jpg'
     },
     {
       id: 'drink2',
       name: 'Lemon Iced Tea',
+      description: 'Drink',
       price: 1.25,
       image: 'attached_assets/Chinese Leomon Tea.jpg'
     },
     {
       id: 'drink3',
       name: 'Mixed Fruit Tea',
+      description: 'Drink',
       price: 1.25,
       image: 'attached_assets/Chinese mix fruit.jpg'
     },
     {
       id: 'drink4',
       name: 'Vigor',
+      description: 'Drink',
       price: 1.00,
       image: 'attached_assets/Vigor.jpg'
     },
     {
       id: 'drink5',
       name: 'Sprite',
+      description: 'Drink',
       price: 0.75,
       image: 'attached_assets/Sprite.jpg'
     },
     {
       id: 'drink6',
       name: 'Vital',
+      description: 'Drink',
       price: 0.375,
       image: 'attached_assets/Vital.jpg'
     }
