@@ -847,9 +847,6 @@ function addToCart(itemId) {
     cart.push({ ...item, quantity: 1 });
   }
 
-  // Show notification
-  showNotification(`${item.name} has been added to cart`);
-
   // Update cart UI
   updateCartUI();
 }
