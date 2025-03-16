@@ -8,28 +8,43 @@ const menuData = {
       id: 'set1',
       name: 'ឈុតស៊ុប(តូច)',
       description: 'Soup Set',
-      longDescription: 'A delicious soup set that includes your choice of meat, vegetables, and noodles. Perfect for 1-2 people.',
+      longDescription: 'Choice of base, 3 Vegetable, Fried Bean Curd, Lean Meat, 2 Noodle, 2 Egg, Mushroom',
       price: 13.75,
       image: 'attached_assets/Set image/Soup set2.jpg',
       options: [
-        { name: 'Regular Set', price: 13.75 },
-        { name: 'Extra Meat Set', price: 15.75 },
-        { name: 'Seafood Set', price: 16.75 }
+        { name: 'Original', price: 13.75 },
+        { name: 'Fresh Fish Ball', price: 13.75 },
+        { name: 'Ox Brain', price: 14.75 },
+        { name: 'Vessels', price: 14.75 }
       ]
     },
     {
       id: 'set2',
       name: 'ឈុតស៊ុប(ធំ)',
       description: 'Family Set',
+      longDescription: 'Choice of base, Fresh Fish Ball, Shrimp, Squid, Mixed Meat Ball, 5 Vegetable, Fried Bean Curd, Lean Meat, Pork, Okra, Baby Corn,  2 Noodle, 2 Egg, Mushroom',
       price: 50.00,
-      image: 'https://via.placeholder.com/300?text=Couple+Set'
+      image: 'https://via.placeholder.com/300?text=Couple+Set',
+      options: [
+        { name: 'Original', price: 50.00 },
+        { name: 'Fresh Fish Ball', price: 50.00 },
+        { name: 'Ox Brain', price: 55.00 },
+        { name: 'Vessels', price: 55.00 }
+      ]
     },
     {
       id: 'set3',
       name: 'ឈុតសាច់អាំង',
       description: 'BBQ Set',
+      longDescription: 'Choice of base, Okra, Baby Corn, Mushroom, Water Mimosa, Mix Vegetable',
       price: 9.75,
-      image: 'attached_assets/BBQ set.png'
+      image: 'attached_assets/BBQ set.png',
+      options: [
+        { name: 'Original', price: 9.75 },
+        { name: 'Pork', price: 9.75 },
+        { name: 'Flank', price: 10.75 },
+        { name: 'Special Cut', price: 10.75 }
+      ]
     }
   ],
   soup: [
