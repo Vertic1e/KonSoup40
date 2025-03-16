@@ -794,10 +794,11 @@ function showItemOptions(item) {
 
   if (item.options) {
     item.options.forEach((option, index) => {
+      const optionId = `${item.id}_opt${index}`; // Create unique option ID
       const optionRow = document.createElement('div');
       optionRow.className = 'option-row';
       optionRow.innerHTML = `
-        <input type="radio" name="item-option" value="${index}" ${index === 0 ? 'checked' : ''}>
+        <input type="radio" name="item-option" value="${optionId}" ${index === 0 ? 'checked' : ''}>
         <span>${option.name}</span>
         <span class="option-price">$${option.price.toFixed(2)} / ៛${Math.round(option.price * EXCHANGE_RATE).toLocaleString()}</span>
       `;
@@ -807,18 +808,20 @@ function showItemOptions(item) {
 
   addButton.onclick = () => {
     const selectedOption = document.querySelector('input[name="item-option"]:checked');
-    const optionIndex = selectedOption ? parseInt(selectedOption.value) : 0;
+    const optionId = selectedOption ? selectedOption.value : `${item.id}_opt0`;
+    const optionIndex = parseInt(optionId.split('_opt')[1]);
     const selectedPrice = item.options ? item.options[optionIndex].price : item.price;
     const selectedName = item.options ? `${item.name} (${item.options[optionIndex].name})` : item.name;
 
     const cartItem = {
       ...item,
+      id: optionId, // Use the unique option ID
       name: selectedName,
       price: selectedPrice
     };
 
     // Add to cart
-    const existingItem = cart.find(i => i.id === cartItem.id && i.name === cartItem.name);
+    const existingItem = cart.find(i => i.id === optionId);
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
@@ -827,6 +830,9 @@ function showItemOptions(item) {
 
     updateCartUI();
     modal.classList.add('hidden');
+    
+    // Show notification
+    showNotification(`${selectedName} has been added to cart`);
   };
 
   modal.classList.remove('hidden');
