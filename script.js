@@ -751,7 +751,7 @@ function displayMenuItems(category) {
       : `attached_assets/logo.jpg`;
 
     menuItemEl.innerHTML = `
-      <img src="${imageSrc}" alt="${item.name}" class="item-image">
+      <img src="${imageSrc}" alt="${item.name}" class="item-image" loading="lazy" width="300" height="200">
       <div class="item-details">
         <div class="item-name">${item.name}</div>
         <div class="item-description">${item.description}</div>
