@@ -8,8 +8,14 @@ const menuData = {
       id: 'set1',
       name: 'ឈុតស៊ុប(តូច)',
       description: 'Soup Set',
+      longDescription: 'A delicious soup set that includes your choice of meat, vegetables, and noodles. Perfect for 1-2 people.',
       price: 13.75,
-      image: 'attached_assets/Set image/Soup set2.jpg'
+      image: 'attached_assets/Set image/Soup set2.jpg',
+      options: [
+        { name: 'Regular Set', price: 13.75 },
+        { name: 'Extra Meat Set', price: 15.75 },
+        { name: 'Seafood Set', price: 16.75 }
+      ]
     },
     {
       id: 'set2',
@@ -757,9 +763,65 @@ function findItemById(id) {
   return null;
 }
 
+function showItemOptions(item) {
+  const modal = document.getElementById('item-options-modal');
+  const title = document.getElementById('item-options-title');
+  const description = document.getElementById('item-options-description');
+  const optionsContainer = document.getElementById('item-options-container');
+  const addButton = document.getElementById('add-with-options-btn');
+
+  title.textContent = item.name;
+  description.textContent = item.longDescription || item.description;
+  optionsContainer.innerHTML = '';
+
+  if (item.options) {
+    item.options.forEach((option, index) => {
+      const optionRow = document.createElement('div');
+      optionRow.className = 'option-row';
+      optionRow.innerHTML = `
+        <input type="radio" name="item-option" value="${index}" ${index === 0 ? 'checked' : ''}>
+        <span>${option.name}</span>
+        <span class="option-price">$${option.price.toFixed(2)} / ៛${Math.round(option.price * EXCHANGE_RATE).toLocaleString()}</span>
+      `;
+      optionsContainer.appendChild(optionRow);
+    });
+  }
+
+  addButton.onclick = () => {
+    const selectedOption = document.querySelector('input[name="item-option"]:checked');
+    const optionIndex = selectedOption ? parseInt(selectedOption.value) : 0;
+    const selectedPrice = item.options ? item.options[optionIndex].price : item.price;
+    const selectedName = item.options ? `${item.name} (${item.options[optionIndex].name})` : item.name;
+
+    const cartItem = {
+      ...item,
+      name: selectedName,
+      price: selectedPrice
+    };
+
+    // Add to cart
+    const existingItem = cart.find(i => i.id === cartItem.id && i.name === cartItem.name);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({ ...cartItem, quantity: 1 });
+    }
+
+    updateCartUI();
+    modal.classList.add('hidden');
+  };
+
+  modal.classList.remove('hidden');
+}
+
 function addToCart(itemId) {
   const item = findItemById(itemId);
   if (!item) return;
+
+  if (item.options && currentCategory === 'set') {
+    showItemOptions(item);
+    return;
+  }
 
   // Check if item is already in cart
   const existingItem = cart.find(cartItem => cartItem.id === itemId);
