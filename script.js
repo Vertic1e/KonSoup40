@@ -1141,16 +1141,22 @@ function initMap() {
 }
 
 // Function to toggle delivery address fields based on selected option
-function toggleDeliveryAddressFields(showFields) {
+function toggleOrderTypeFields(type) {
   const addressFields = document.getElementById('delivery-address-fields');
-  if (addressFields) {
-    addressFields.style.display = showFields ? 'block' : 'none';
+  const pickupTimeField = document.getElementById('pickup-time-field');
+  const addressInput = document.getElementById('customer-address');
+  const pickupTimeInput = document.getElementById('pickup-time');
 
-    // Make address field required only if delivery is selected
-    const addressInput = document.getElementById('customer-address');
-    if (addressInput) {
-      addressInput.required = showFields;
-    }
+  if (type === 'delivery') {
+    addressFields.style.display = 'block';
+    pickupTimeField.style.display = 'none';
+    addressInput.required = true;
+    pickupTimeInput.required = false;
+  } else {
+    addressFields.style.display = 'none';
+    pickupTimeField.style.display = 'block';
+    addressInput.required = false;
+    pickupTimeInput.required = true;
   }
 }
 
@@ -1172,7 +1178,8 @@ function handleOrderSubmission(e) {
     lat = document.getElementById('customer-lat').value;
     lng = document.getElementById('customer-lng').value;
   } else {
-    address = 'Pickup at restaurant';
+    const pickupTime = document.getElementById('pickup-time').value;
+    address = `Pickup at restaurant (Time: ${pickupTime})`;
   }
 
   const notes = document.getElementById('order-notes-input').value;

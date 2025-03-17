@@ -81,14 +81,19 @@
           <label>Order Type:</label>
           <div class="order-type-options">
             <label class="radio-label">
-              <input type="radio" name="order-type" id="pickup-option" value="pickup" onchange="toggleDeliveryAddressFields(false)">
+              <input type="radio" name="order-type" id="pickup-option" value="pickup" onchange="toggleOrderTypeFields('pickup')">
               <span>Pickup</span>
             </label>
             <label class="radio-label">
-              <input type="radio" name="order-type" id="delivery-option" value="delivery" onchange="toggleDeliveryAddressFields(true)">
+              <input type="radio" name="order-type" id="delivery-option" value="delivery" onchange="toggleOrderTypeFields('delivery')">
               <span>Delivery</span>
             </label>
           </div>
+        </div>
+        
+        <div id="pickup-time-field" class="form-group" style="display: none;">
+          <label for="pickup-time">Pickup Time:</label>
+          <input type="time" id="pickup-time" required>
         </div>
         
         <div id="delivery-address-fields">
