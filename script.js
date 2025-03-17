@@ -1,3 +1,24 @@
+
+// Function to show in-app notification
+function showNotification(message) {
+  // Create notification element if it doesn't exist
+  let notification = document.getElementById('app-notification');
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'app-notification';
+    document.body.appendChild(notification);
+  }
+  
+  // Set message and show notification
+  notification.textContent = message;
+  notification.classList.add('show');
+  
+  // Hide notification after 3 seconds
+  setTimeout(function() {
+    notification.classList.remove('show');
+  }, 3000);
+}
+
 // Exchange rate constant (1 USD to Cambodian Riel)
 const EXCHANGE_RATE = 4000; // 1 USD = 4100 Riel (adjust as needed)
 
@@ -503,36 +524,42 @@ const menuData = {
     {
       id: 'drink1',
       name: 'Coke',
+      description: 'Soft Drink',
       price: 0.75,
       image: 'attached_assets/Coke.jpg'
     },
     {
       id: 'drink2',
       name: 'Lemon Iced Tea',
+      description: 'Soft Drink',
       price: 1.25,
       image: 'attached_assets/Chinese Leomon Tea.jpg'
     },
     {
       id: 'drink3',
       name: 'Mixed Fruit Tea',
+      description: 'Soft Drink',
       price: 1.25,
       image: 'attached_assets/Chinese mix fruit.jpg'
     },
     {
       id: 'drink4',
       name: 'Vigor',
+      description: 'Soft Drink',
       price: 1.00,
       image: 'attached_assets/Vigor.jpg'
     },
     {
       id: 'drink5',
       name: 'Sprite',
+      description: 'Soft Drink',
       price: 0.75,
       image: 'attached_assets/Sprite.jpg'
     },
     {
       id: 'drink6',
       name: 'Vital',
+      description: 'Soft Drink',
       price: 0.375,
       image: 'attached_assets/Vital.jpg'
     }
@@ -626,25 +653,7 @@ function setupEventListeners() {
     showNotification("Thank you for your order! We'll process it right away.");
   });
   
-  // Function to show in-app notification
-  function showNotification(message) {
-    // Create notification element if it doesn't exist
-    let notification = document.getElementById('app-notification');
-    if (!notification) {
-      notification = document.createElement('div');
-      notification.id = 'app-notification';
-      document.body.appendChild(notification);
-    }
-    
-    // Set message and show notification
-    notification.textContent = message;
-    notification.classList.add('show');
-    
-    // Hide notification after 3 seconds
-    setTimeout(function() {
-      notification.classList.remove('show');
-    }, 3000);
-  }
+  
 
   // Always show the Done button next to Print Invoice
   document.getElementById('payment-done-btn').style.display = 'inline-block';
@@ -748,7 +757,7 @@ function displayMenuItems(category) {
       : `attached_assets/logo.jpg`;
 
     menuItemEl.innerHTML = `
-      <img src="${imageSrc}" alt="${item.name}" class="item-image">
+      <img src="${imageSrc}" alt="${item.name}" class="item-image" loading="lazy" width="300" height="200">
       <div class="item-details">
         <div class="item-name">${item.name}</div>
         <div class="item-description">${item.description}</div>
@@ -791,10 +800,11 @@ function showItemOptions(item) {
 
   if (item.options) {
     item.options.forEach((option, index) => {
+      const optionId = `${item.id}_opt${index}`; // Create unique option ID
       const optionRow = document.createElement('div');
       optionRow.className = 'option-row';
       optionRow.innerHTML = `
-        <input type="radio" name="item-option" value="${index}" ${index === 0 ? 'checked' : ''}>
+        <input type="radio" name="item-option" value="${optionId}" ${index === 0 ? 'checked' : ''}>
         <span>${option.name}</span>
         <span class="option-price">$${option.price.toFixed(2)} / ៛${Math.round(option.price * EXCHANGE_RATE).toLocaleString()}</span>
       `;
@@ -804,18 +814,20 @@ function showItemOptions(item) {
 
   addButton.onclick = () => {
     const selectedOption = document.querySelector('input[name="item-option"]:checked');
-    const optionIndex = selectedOption ? parseInt(selectedOption.value) : 0;
+    const optionId = selectedOption ? selectedOption.value : `${item.id}_opt0`;
+    const optionIndex = parseInt(optionId.split('_opt')[1]);
     const selectedPrice = item.options ? item.options[optionIndex].price : item.price;
     const selectedName = item.options ? `${item.name} (${item.options[optionIndex].name})` : item.name;
 
     const cartItem = {
       ...item,
+      id: optionId, // Use the unique option ID
       name: selectedName,
       price: selectedPrice
     };
 
     // Add to cart
-    const existingItem = cart.find(i => i.id === cartItem.id && i.name === cartItem.name);
+    const existingItem = cart.find(i => i.id === optionId);
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
@@ -824,6 +836,9 @@ function showItemOptions(item) {
 
     updateCartUI();
     modal.classList.add('hidden');
+    
+    // Show notification
+    showNotification(`${selectedName} has been added to cart`);
   };
 
   modal.classList.remove('hidden');
@@ -846,6 +861,9 @@ function addToCart(itemId) {
   } else {
     cart.push({ ...item, quantity: 1 });
   }
+
+  // Show notification
+  showNotification(`${item.name} has been added to cart`);
 
   // Update cart UI
   updateCartUI();
