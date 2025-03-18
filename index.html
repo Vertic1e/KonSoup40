@@ -132,7 +132,10 @@
           <div class="payment-upload">
             <label for="payment-proof">Upload Payment Screenshot:</label>
             <input type="file" id="payment-proof" class="hidden-upload" accept="image/*">
-            <button class="upload-btn" id="trigger-upload-btn">Upload Payment</button>
+            <div class="payment-buttons">
+              <button class="upload-btn" id="trigger-upload-btn">Upload Payment</button>
+              <button class="payment-link-btn" id="payment-link-btn">Payment Link</button>
+            </div>
             <div class="payment-preview" id="payment-preview">
               <img id="preview-image" src="" alt="Payment proof">
             </div>
