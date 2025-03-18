@@ -524,42 +524,36 @@ const menuData = {
     {
       id: 'drink1',
       name: 'Coke',
-      description: 'Soft Drink',
       price: 0.75,
       image: 'attached_assets/Coke.jpg'
     },
     {
       id: 'drink2',
       name: 'Lemon Iced Tea',
-      description: 'Soft Drink',
       price: 1.25,
       image: 'attached_assets/Chinese Leomon Tea.jpg'
     },
     {
       id: 'drink3',
       name: 'Mixed Fruit Tea',
-      description: 'Soft Drink',
       price: 1.25,
       image: 'attached_assets/Chinese mix fruit.jpg'
     },
     {
       id: 'drink4',
       name: 'Vigor',
-      description: 'Soft Drink',
       price: 1.00,
       image: 'attached_assets/Vigor.jpg'
     },
     {
       id: 'drink5',
       name: 'Sprite',
-      description: 'Soft Drink',
       price: 0.75,
       image: 'attached_assets/Sprite.jpg'
     },
     {
       id: 'drink6',
       name: 'Vital',
-      description: 'Soft Drink',
       price: 0.375,
       image: 'attached_assets/Vital.jpg'
     }
@@ -637,6 +631,20 @@ function setupEventListeners() {
   // Payment upload button
   document.getElementById('trigger-upload-btn').addEventListener('click', function() {
     document.getElementById('payment-proof').click();
+  });
+
+  // Payment link button
+  document.getElementById('payment-link-btn').addEventListener('click', function() {
+    // Deep link to ABA Pay
+    const abaPayLink = 'ababank://'; 
+    window.location.href = abaPayLink;
+    
+    // Fallback for desktop or if app is not installed
+    setTimeout(function() {
+      if (document.hidden) return; // User was redirected successfully
+      // Show notification if app couldn't be opened
+      showNotification("Please install ABA Mobile app or use the Upload Payment option");
+    }, 1000);
   });
 
   // Payment proof upload handling
