@@ -524,42 +524,36 @@ const menuData = {
     {
       id: 'drink1',
       name: 'Coke',
-      description: 'Soft Drink',
       price: 0.75,
       image: 'attached_assets/Coke.jpg'
     },
     {
       id: 'drink2',
       name: 'Lemon Iced Tea',
-      description: 'Soft Drink',
       price: 1.25,
       image: 'attached_assets/Chinese Leomon Tea.jpg'
     },
     {
       id: 'drink3',
       name: 'Mixed Fruit Tea',
-      description: 'Soft Drink',
       price: 1.25,
       image: 'attached_assets/Chinese mix fruit.jpg'
     },
     {
       id: 'drink4',
       name: 'Vigor',
-      description: 'Soft Drink',
       price: 1.00,
       image: 'attached_assets/Vigor.jpg'
     },
     {
       id: 'drink5',
       name: 'Sprite',
-      description: 'Soft Drink',
       price: 0.75,
       image: 'attached_assets/Sprite.jpg'
     },
     {
       id: 'drink6',
       name: 'Vital',
-      description: 'Soft Drink',
       price: 0.375,
       image: 'attached_assets/Vital.jpg'
     }
@@ -1141,22 +1135,16 @@ function initMap() {
 }
 
 // Function to toggle delivery address fields based on selected option
-function toggleOrderTypeFields(type) {
+function toggleDeliveryAddressFields(showFields) {
   const addressFields = document.getElementById('delivery-address-fields');
-  const pickupTimeField = document.getElementById('pickup-time-field');
-  const addressInput = document.getElementById('customer-address');
-  const pickupTimeInput = document.getElementById('pickup-time');
+  if (addressFields) {
+    addressFields.style.display = showFields ? 'block' : 'none';
 
-  if (type === 'delivery') {
-    addressFields.style.display = 'block';
-    pickupTimeField.style.display = 'none';
-    addressInput.required = true;
-    pickupTimeInput.required = false;
-  } else {
-    addressFields.style.display = 'none';
-    pickupTimeField.style.display = 'block';
-    addressInput.required = false;
-    pickupTimeInput.required = true;
+    // Make address field required only if delivery is selected
+    const addressInput = document.getElementById('customer-address');
+    if (addressInput) {
+      addressInput.required = showFields;
+    }
   }
 }
 
@@ -1178,8 +1166,7 @@ function handleOrderSubmission(e) {
     lat = document.getElementById('customer-lat').value;
     lng = document.getElementById('customer-lng').value;
   } else {
-    const pickupTime = document.getElementById('pickup-time').value;
-    address = `Pickup at restaurant (Time: ${pickupTime})`;
+    address = 'Pickup at restaurant';
   }
 
   const notes = document.getElementById('order-notes-input').value;
