@@ -1,4 +1,3 @@
-
 // Function to show in-app notification
 function showNotification(message) {
   // Create notification element if it doesn't exist
@@ -8,11 +7,11 @@ function showNotification(message) {
     notification.id = 'app-notification';
     document.body.appendChild(notification);
   }
-  
+
   // Set message and show notification
   notification.textContent = message;
   notification.classList.add('show');
-  
+
   // Hide notification after 3 seconds
   setTimeout(function() {
     notification.classList.remove('show');
@@ -513,7 +512,7 @@ const menuData = {
       image: 'attached_assets/IMG_8309.JPG'
     },
     {
-      id: 'bbq13', //skip to bbq16
+      id: 'bbq13', 
       name: 'ហតដក',
       description: 'Hot dog',
       price: 1.00,
@@ -589,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupEventListeners() {
   // Initialize order history count
   updateOrderHistoryCount();
-  
+
   // Category buttons
   const categoryBtns = document.querySelectorAll('.category-btn');
   categoryBtns.forEach(btn => {
@@ -638,7 +637,7 @@ function setupEventListeners() {
     // Deep link to ABA Pay
     const abaPayLink = 'ababank://'; 
     window.location.href = abaPayLink;
-    
+
     // Fallback for desktop or if app is not installed
     setTimeout(function() {
       if (document.hidden) return; // User was redirected successfully
@@ -656,12 +655,12 @@ function setupEventListeners() {
     // Reset cart and UI
     cart = [];
     updateCartUI();
-    
+
     // Show in-app notification
     showNotification("Thank you for your order! We'll process it right away.");
   });
-  
-  
+
+
 
   // Always show the Done button next to Print Invoice
   document.getElementById('payment-done-btn').style.display = 'inline-block';
@@ -758,7 +757,7 @@ function displayMenuItems(category) {
     menuItemEl.className = 'menu-item';
     // Calculate price in riel
     const rielPrice = Math.round(item.price * EXCHANGE_RATE);
-    
+
     // Use a static placeholder for items without an image or with placeholder URLs
     const imageSrc = (item.image && !item.image.includes('placeholder.com')) 
       ? item.image 
@@ -844,7 +843,7 @@ function showItemOptions(item) {
 
     updateCartUI();
     modal.classList.add('hidden');
-    
+
     // Show notification
     showNotification(`${selectedName} has been added to cart`);
   };
@@ -1032,6 +1031,15 @@ function initMap() {
         // Update form values
         document.getElementById('customer-lat').value = pos.lat;
         document.getElementById('customer-lng').value = pos.lng;
+
+        // Get address from coordinates using reverse geocoding
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.lat}&lon=${pos.lng}`)
+          .then(response => response.json())
+          .then(data => {
+            const address = data.display_name;
+            document.getElementById('customer-address').value = address;
+          })
+          .catch(error => console.error('Error getting address:', error));
 
         // Center map on user location
         map.setView([pos.lat, pos.lng], 15);
@@ -1426,7 +1434,7 @@ function saveOrderToHistory(orderData) {
 
   // Store back in localStorage
   localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-  
+
   // Update the order history count badge
   updateOrderHistoryCount();
 }
@@ -1444,7 +1452,7 @@ function showOrderHistory() {
 function updateOrderHistoryCount() {
   const orderHistoryCountEl = document.getElementById('order-history-count');
   const orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
-  
+
   if (orderHistoryCountEl) {
     orderHistoryCountEl.textContent = orderHistory.length;
     // Show badge only if there are orders
@@ -1515,39 +1523,39 @@ function showInvoiceFromHistory(orderData) {
 
   // Hide the Done button for historical invoices
   document.getElementById('payment-done-btn').style.display = 'none';
-  
+
   // Add click handler to the close modal X button and print invoice button
   const closeModalBtn = document.querySelector('#invoice-modal .close-modal');
   const printInvoiceBtn = document.getElementById('print-invoice-btn');
-  
+
   // Store original handlers
   const originalCloseHandler = closeModalBtn.onclick;
   const originalPrintHandler = printInvoiceBtn.onclick;
-  
+
   // Override close button handler
   closeModalBtn.onclick = function() {
     // Hide invoice modal
     document.getElementById('invoice-modal').classList.add('hidden');
-    
+
     // Show order history modal again
     document.getElementById('order-history-modal').classList.remove('hidden');
-    
+
     // Restore original handlers
     closeModalBtn.onclick = originalCloseHandler;
     printInvoiceBtn.onclick = originalPrintHandler;
   };
-  
+
   // Modify print button to return to history after printing
   printInvoiceBtn.onclick = function() {
     // Print the invoice
     printInvoice();
-    
+
     // Hide invoice modal
     document.getElementById('invoice-modal').classList.add('hidden');
-    
+
     // Show order history modal again
     document.getElementById('order-history-modal').classList.remove('hidden');
-    
+
     // Restore original handlers
     closeModalBtn.onclick = originalCloseHandler;
     printInvoiceBtn.onclick = originalPrintHandler;
