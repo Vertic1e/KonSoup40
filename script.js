@@ -1159,16 +1159,44 @@ function initMap() {
 // Function to toggle delivery address fields based on selected option
 function toggleDeliveryAddressFields(showFields) {
   const addressFields = document.getElementById('delivery-address-fields');
+  const pickupTimeGroup = document.getElementById('pickup-time-group');
+  const pickupTimeInput = document.getElementById('pickup-time');
+  
   if (addressFields) {
     addressFields.style.display = showFields ? 'block' : 'none';
+    pickupTimeGroup.style.display = showFields ? 'none' : 'block';
 
-    // Make address field required only if delivery is selected
+    // Toggle required fields based on delivery/pickup
     const addressInput = document.getElementById('customer-address');
     if (addressInput) {
       addressInput.required = showFields;
     }
+    pickupTimeInput.required = !showFields;
   }
 }
+
+function validatePickupTime(timeStr) {
+  const time = new Date(`2000-01-01T${timeStr}`);
+  const hours = time.getHours();
+  return hours >= 16 && hours < 22;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const pickupTimeInput = document.getElementById('pickup-time');
+  const pickupTimeError = document.getElementById('pickup-time-error');
+
+  if (pickupTimeInput) {
+    pickupTimeInput.addEventListener('change', function() {
+      if (!validatePickupTime(this.value)) {
+        pickupTimeError.textContent = 'Please select a time between 4 PM and 10 PM';
+        this.setCustomValidity('Invalid pickup time');
+      } else {
+        pickupTimeError.textContent = '';
+        this.setCustomValidity('');
+      }
+    });
+  }
+});
 
 function handleOrderSubmission(e) {
   e.preventDefault();
