@@ -585,19 +585,7 @@ header {
   justify-content: center;
 }
 
-.payment-link-btn {
-  padding: 10px 20px;
-  background-color: #1e88e5;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
 
-.payment-link-btn:hover {
-  background-color: #1565c0;
-}
 
 .payment-preview {
   margin-top: 15px;
