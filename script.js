@@ -1410,37 +1410,51 @@ function handlePaymentUpload(event) {
       uploadBtn.disabled = true;
     }
 
+    // Create preview elements if they don't exist
+    let paymentPreview = document.getElementById('payment-preview');
+    let previewImg = document.getElementById('preview-image');
+    
+    if (!paymentPreview) {
+      paymentPreview = document.createElement('div');
+      paymentPreview.id = 'payment-preview';
+      paymentPreview.className = 'payment-preview';
+      document.querySelector('.payment-upload').appendChild(paymentPreview);
+    }
+    
+    if (!previewImg) {
+      previewImg = document.createElement('img');
+      previewImg.id = 'preview-image';
+      previewImg.alt = 'Payment proof';
+      paymentPreview.appendChild(previewImg);
+    }
+
     // Show preview of uploaded payment proof
     const reader = new FileReader();
     reader.onload = function(e) {
       try {
-        const previewImg = document.getElementById('preview-image');
-        const paymentPreview = document.getElementById('payment-preview');
-        const doneBtn = document.getElementById('payment-done-btn');
+        previewImg.src = e.target.result;
+        paymentPreview.style.display = 'block';
         
-        if (previewImg && paymentPreview) {
-          previewImg.src = e.target.result;
-          paymentPreview.style.display = 'block';
+        const doneBtn = document.getElementById('payment-done-btn');
 
-          // Send payment proof to Telegram
-          sendPaymentProofToTelegram(e.target.result)
-            .then(() => {
-              showNotification('Payment proof uploaded successfully');
-              if (doneBtn) {
-                doneBtn.disabled = false;
-              }
-            })
-            .catch(error => {
-              console.error('Error sending to Telegram:', error);
-              showNotification('Error uploading payment proof. Please try again.');
-            })
-            .finally(() => {
-              if (uploadBtn) {
-                uploadBtn.textContent = 'Upload Payment';
-                uploadBtn.disabled = false;
-              }
-            });
-        }
+        // Send payment proof to Telegram
+        sendPaymentProofToTelegram(e.target.result)
+          .then(() => {
+            showNotification('Payment proof uploaded successfully');
+            if (doneBtn) {
+              doneBtn.disabled = false;
+            }
+          })
+          .catch(error => {
+            console.error('Error sending to Telegram:', error);
+            showNotification('Error uploading payment proof. Please try again.');
+          })
+          .finally(() => {
+            if (uploadBtn) {
+              uploadBtn.textContent = 'Upload Payment';
+              uploadBtn.disabled = false;
+            }
+          });
       } catch (error) {
         console.error('Error handling payment preview:', error);
         showNotification('Error displaying payment proof');
