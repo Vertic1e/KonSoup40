@@ -1384,15 +1384,40 @@ function handlePaymentUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
 
+  const uploadBtn = document.getElementById('trigger-upload-btn');
+  if (uploadBtn) {
+    uploadBtn.textContent = 'Uploading...';
+    uploadBtn.disabled = true;
+  }
+
   // Show preview of uploaded payment proof
   const reader = new FileReader();
   reader.onload = function(e) {
     const previewImg = document.getElementById('preview-image');
-    previewImg.src = e.target.result;
-    document.getElementById('payment-preview').style.display = 'block';
+    const paymentPreview = document.getElementById('payment-preview');
+    
+    if (previewImg && paymentPreview) {
+      previewImg.src = e.target.result;
+      paymentPreview.style.display = 'block';
 
-    // Send payment proof to Telegram
-    sendPaymentProofToTelegram(e.target.result);
+      // Send payment proof to Telegram
+      sendPaymentProofToTelegram(e.target.result)
+        .then(() => {
+          showNotification('Payment proof uploaded successfully');
+          if (uploadBtn) {
+            uploadBtn.textContent = 'Upload Payment';
+            uploadBtn.disabled = false;
+          }
+        })
+        .catch(error => {
+          console.error('Error uploading payment proof:', error);
+          showNotification('Error uploading payment proof');
+          if (uploadBtn) {
+            uploadBtn.textContent = 'Upload Payment';
+            uploadBtn.disabled = false;
+          }
+        });
+    }
   };
   reader.readAsDataURL(file);
 }
