@@ -1383,44 +1383,93 @@ function printInvoice() {
 }
 
 function handlePaymentUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  // Validate file type
-  if (!file.type.startsWith('image/')) {
-    showNotification('Please upload an image file');
-    return;
-  }
-
-  // Show preview of uploaded payment proof
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const previewImg = document.getElementById('preview-image');
-      const paymentPreview = document.getElementById('payment-preview');
-      
-      if (previewImg && paymentPreview) {
-        previewImg.src = e.target.result;
-        paymentPreview.style.display = 'block';
-
-        // Send payment proof to Telegram
-        sendPaymentProofToTelegram(e.target.result);
-        
-        // Show success notification
-        showNotification('Payment proof uploaded successfully');
-      }
-    } catch (error) {
-      console.error('Error handling payment upload:', error);
-      showNotification('Error uploading payment proof');
+  try {
+    const file = event.target.files[0];
+    if (!file) {
+      showNotification('Please select a file');
+      return;
     }
-  };
 
-  reader.onerror = function() {
-    console.error('Error reading file');
-    showNotification('Error reading file');
-  };
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      showNotification('Please upload an image file (JPG, PNG, etc.)');
+      return;
+    }
 
-  reader.readAsDataURL(file);
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      showNotification('Image size must be less than 5MB');
+      return;
+    }
+
+    // Show loading state
+    const uploadBtn = document.getElementById('trigger-upload-btn');
+    if (uploadBtn) {
+      uploadBtn.textContent = 'Uploading...';
+      uploadBtn.disabled = true;
+    }
+
+    // Show preview of uploaded payment proof
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const previewImg = document.getElementById('preview-image');
+        const paymentPreview = document.getElementById('payment-preview');
+        const doneBtn = document.getElementById('payment-done-btn');
+        
+        if (previewImg && paymentPreview) {
+          previewImg.src = e.target.result;
+          paymentPreview.style.display = 'block';
+
+          // Send payment proof to Telegram
+          sendPaymentProofToTelegram(e.target.result)
+            .then(() => {
+              showNotification('Payment proof uploaded successfully');
+              if (doneBtn) {
+                doneBtn.disabled = false;
+              }
+            })
+            .catch(error => {
+              console.error('Error sending to Telegram:', error);
+              showNotification('Error uploading payment proof. Please try again.');
+            })
+            .finally(() => {
+              if (uploadBtn) {
+                uploadBtn.textContent = 'Upload Payment';
+                uploadBtn.disabled = false;
+              }
+            });
+        }
+      } catch (error) {
+        console.error('Error handling payment preview:', error);
+        showNotification('Error displaying payment proof');
+        if (uploadBtn) {
+          uploadBtn.textContent = 'Upload Payment';
+          uploadBtn.disabled = false;
+        }
+      }
+    };
+
+    reader.onerror = function() {
+      console.error('Error reading file');
+      showNotification('Error reading file. Please try again.');
+      if (uploadBtn) {
+        uploadBtn.textContent = 'Upload Payment';
+        uploadBtn.disabled = false;
+      }
+    };
+
+    reader.readAsDataURL(file);
+  } catch (error) {
+    console.error('Payment upload error:', error);
+    showNotification('Error uploading payment proof. Please try again.');
+    const uploadBtn = document.getElementById('trigger-upload-btn');
+    if (uploadBtn) {
+      uploadBtn.textContent = 'Upload Payment';
+      uploadBtn.disabled = false;
+    }
+  }
 }
 
 function sendPaymentProofToTelegram(imageDataUrl) {
