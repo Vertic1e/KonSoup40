@@ -1041,14 +1041,6 @@ function initMap() {
           }).addTo(map);
         }
 
-        // Add circle to show accuracy
-        const accuracyCircle = L.circle([pos.lat, pos.lng], {
-          radius: position.coords.accuracy,
-          color: '#4285F4',
-          fillColor: '#4285F4',
-          fillOpacity: 0.2
-        }).addTo(map);
-
         // Show success message
         const successMsg = document.createElement('div');
         successMsg.innerHTML = '<p style="color:green;font-size:12px;margin-top:5px;">✓ Your location was successfully detected</p>';
@@ -1114,6 +1106,16 @@ function initMap() {
       }).addTo(map);
     }
 
+    // Function to update address from coordinates
+    function updateAddressFromCoords(lat, lng) {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('customer-address').value = data.display_name;
+        })
+        .catch(error => console.error('Error getting address:', error));
+    }
+
     // Add click event to the map to update marker position
     map.on('click', function(e) {
       const clickedPos = e.latlng;
@@ -1126,9 +1128,24 @@ function initMap() {
       if (userMarker) {
         userMarker.setLatLng(clickedPos);
       } else {
-        userMarker = L.marker(clickedPos).addTo(map);
+        userMarker = L.marker(clickedPos, {
+          draggable: true
+        }).addTo(map);
       }
+
+      // Update address based on new coordinates
+      updateAddressFromCoords(clickedPos.lat, clickedPos.lng);
     });
+
+    // Add drag end event to marker
+    if (userMarker) {
+      userMarker.on('dragend', function(e) {
+        const pos = e.target.getLatLng();
+        document.getElementById('customer-lat').value = pos.lat;
+        document.getElementById('customer-lng').value = pos.lng;
+        updateAddressFromCoords(pos.lat, pos.lng);
+      });
+    }
 
   } catch (error) {
     console.error('Map initialization error:', error);
