@@ -638,12 +638,7 @@ function setupEventListeners() {
     const abaPayLink = 'ababank://'; 
     window.location.href = abaPayLink;
 
-    // Fallback for desktop or if app is not installed
-    setTimeout(function() {
-      if (document.hidden) return; // User was redirected successfully
-      // Show notification if app couldn't be opened
-      showNotification("Please install ABA Mobile app or use the Upload Payment option");
-    }, 1000);
+
   });
 
   // Payment proof upload handling
