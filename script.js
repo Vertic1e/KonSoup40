@@ -1466,7 +1466,7 @@ function sendPaymentProofToTelegram(imageDataUrl) {
   }
 
   // Instead of sending the full order again, just send the payment proof image with a simple caption
-  const caption = `💳 <b>Payment Proof</b> for Order #${orderData.orderNumber}`;
+  const caption = `💳 <b>Payment Proof for Order #${orderData.orderNumber}</b>`;
 
   // Send just the payment proof image
   window.TelegramBot.sendImageToTelegram(botToken, chatId, imageDataUrl, caption)

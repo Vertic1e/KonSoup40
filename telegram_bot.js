@@ -82,7 +82,7 @@ function sendPaymentProofMessage(botToken, chatId, message, imageUrl) {
   // Just send the image without resending the order message
   if (imageUrl && imageUrl.startsWith('data:image')) {
     console.log("Image data received, sending actual image to Telegram");
-    return sendImageToTelegram(botToken, chatId, imageUrl, "💳 <b>Payment proof</b>");
+    return sendImageToTelegram(botToken, chatId, imageUrl, `💳 <b>Payment proof for Order #${message}</b>`);
   }
   return Promise.resolve({ ok: true });
 }
