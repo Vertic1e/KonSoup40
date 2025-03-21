@@ -904,7 +904,7 @@ function updateCartUI() {
   if (cart.length === 0) {
     cartItemsEl.innerHTML = '<p>Your cart is empty</p>';
   } else {
-    cart.forEach(item => {
+    cart.forEach(item=> {
       const cartItemEl = document.createElement('div');
       cartItemEl.className = 'cart-item';
       // Calculate price in riel
@@ -1156,7 +1156,7 @@ function toggleDeliveryAddressFields(showFields) {
   const addressFields = document.getElementById('delivery-address-fields');
   const pickupTimeGroup = document.getElementById('pickup-time-group');
   const pickupTimeInput = document.getElementById('pickup-time');
-  
+
   if (addressFields) {
     addressFields.style.display = showFields ? 'block' : 'none';
     pickupTimeGroup.style.display = showFields ? 'none' : 'block';
@@ -1234,23 +1234,18 @@ function handleOrderSubmission(e) {
     orderType: document.querySelector('input[name="order-type"]:checked').value
   };
 
-  // Store order data in localStorage for later use with payment proof
+  // Store order data for use with payment proof
   localStorage.setItem('currentOrder', JSON.stringify(orderData));
 
-  // Save order to order history
-  saveOrderToHistory(orderData);
-
-  // Generate invoice
-  generateInvoice(orderData);
-
-
-  // Hide checkout modal and show invoice
+  // Show checkout modal and show invoice
   document.getElementById('checkout-modal').classList.add('hidden');
   document.getElementById('invoice-modal').classList.remove('hidden');
 
   // Hide payment section for pickup orders
   if (orderData.orderType === 'pickup') {
     document.querySelector('.payment-info').style.display = 'none';
+    // For pickup orders, send notification immediately
+    completeOrderAndNotify(orderData);
   } else {
     document.querySelector('.payment-info').style.display = 'block';
   }
@@ -1258,8 +1253,6 @@ function handleOrderSubmission(e) {
   // Always show Done button
   document.getElementById('payment-done-btn').style.display = 'inline-block';
 
-  // Send Telegram notification
-  sendTelegramNotification(orderData);
 }
 
 // Function to send Telegram notification
@@ -1583,4 +1576,27 @@ function showInvoiceFromHistory(orderData) {
     closeModalBtn.onclick = originalCloseHandler;
     printInvoiceBtn.onclick = originalPrintHandler;
   };
+}
+
+//Added function to send all information at once when the order is completed
+function completeOrderAndNotify(orderData) {
+  // Get saved Telegram settings
+  const botToken = localStorage.getItem('telegram_bot_token') || '7499570335:AAGPL3nF-d6261tCHJkBHqpjdIOE-J1-F14';
+  const chatId = localStorage.getItem('telegram_chat_id') || '552363617';
+
+  if (!botToken || !chatId) {
+    console.warn('Telegram notification not sent: Bot token or Chat ID not configured');
+    return;
+  }
+
+  const message = window.TelegramBot.formatOrderForTelegram(orderData);
+
+  // Send the message to Telegram
+  window.TelegramBot.sendTelegramMessage(botToken, chatId, message)
+    .then(response => {
+      console.log('Telegram notification sent successfully');
+    })
+    .catch(error => {
+      console.error('Error sending Telegram notification:', error);
+    });
 }
