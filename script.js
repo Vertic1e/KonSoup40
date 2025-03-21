@@ -1382,10 +1382,26 @@ function printInvoice() {
 
 function handlePaymentUpload(event) {
   const file = event.target.files[0];
-  if (!file) return;
+  if (!file) {
+    showNotification('No file selected');
+    return;
+  }
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    showNotification('Please select an image file');
+    return;
+  }
 
   const uploadBtn = document.getElementById('trigger-upload-btn');
   const doneBtn = document.getElementById('payment-done-btn');
+  const previewImg = document.getElementById('preview-image');
+  const paymentPreview = document.getElementById('payment-preview');
+
+  if (!previewImg || !paymentPreview) {
+    showNotification('Error: Preview elements not found');
+    return;
+  }
   
   if (uploadBtn) {
     uploadBtn.textContent = 'Uploading...';
@@ -1396,16 +1412,11 @@ function handlePaymentUpload(event) {
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
-      const previewImg = document.getElementById('preview-image');
-      const paymentPreview = document.getElementById('payment-preview');
-      
-      if (!previewImg || !paymentPreview) {
-        console.error('Preview elements not found');
-        return;
-      }
-
       previewImg.src = e.target.result;
-      paymentPreview.style.display = 'block';
+      previewImg.onload = function() {
+        paymentPreview.style.display = 'block';
+        showNotification('Payment proof uploaded successfully');
+      };
 
       // Get the current order data
       const orderData = JSON.parse(localStorage.getItem('currentOrder'));
