@@ -1386,47 +1386,80 @@ function handlePaymentUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
 
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    showNotification('Please upload an image file');
+    return;
+  }
+
   // Show preview of uploaded payment proof
   const reader = new FileReader();
   reader.onload = function(e) {
-    const previewImg = document.getElementById('preview-image');
-    previewImg.src = e.target.result;
-    document.getElementById('payment-preview').style.display = 'block';
+    try {
+      const previewImg = document.getElementById('preview-image');
+      const paymentPreview = document.getElementById('payment-preview');
+      
+      if (previewImg && paymentPreview) {
+        previewImg.src = e.target.result;
+        paymentPreview.style.display = 'block';
 
-    // Send payment proof to Telegram
-    sendPaymentProofToTelegram(e.target.result);
+        // Send payment proof to Telegram
+        sendPaymentProofToTelegram(e.target.result);
+        
+        // Show success notification
+        showNotification('Payment proof uploaded successfully');
+      }
+    } catch (error) {
+      console.error('Error handling payment upload:', error);
+      showNotification('Error uploading payment proof');
+    }
   };
+
+  reader.onerror = function() {
+    console.error('Error reading file');
+    showNotification('Error reading file');
+  };
+
   reader.readAsDataURL(file);
 }
 
 function sendPaymentProofToTelegram(imageDataUrl) {
   // Get saved Telegram settings
-  const botToken = '7499570335:AAGPL3nF-d6261tCHJkBHqpjdIOE-J1-F14'; // Hardcoded token for reliability
-  const chatId = '552363617'; // Hardcoded chat ID for reliability
+  const botToken = '7499570335:AAGPL3nF-d6261tCHJkBHqpjdIOE-J1-F14';
+  const chatId = '552363617';
 
   // Check if Telegram is configured
   if (!botToken || !chatId) {
-    console.warn('Telegram notification not sent: Bot token or Chat ID not configured');
+    showNotification('Error: Telegram not configured');
     return;
   }
 
   // Get the current order data from localStorage
   const orderData = JSON.parse(localStorage.getItem('currentOrder'));
   if (!orderData) {
-    console.error('Order data not found');
+    showNotification('Error: Order data not found');
     return;
   }
 
-  // Instead of sending the full order again, just send the payment proof image with a simple caption
   const caption = `💳 <b>Payment Proof</b> for Order #${orderData.orderNumber}`;
 
-  // Send just the payment proof image
+  // Send the payment proof image
   window.TelegramBot.sendImageToTelegram(botToken, chatId, imageDataUrl, caption)
     .then(response => {
-      console.log("Payment proof sent successfully to Telegram");
+      if (response.ok) {
+        console.log("Payment proof sent successfully to Telegram");
+        // Enable the Done button after successful upload
+        const doneBtn = document.getElementById('payment-done-btn');
+        if (doneBtn) {
+          doneBtn.disabled = false;
+        }
+      } else {
+        throw new Error('Failed to send payment proof');
+      }
     })
     .catch(error => {
       console.error("Error sending payment proof to Telegram:", error);
+      showNotification('Error sending payment proof');
     });
 }
 
