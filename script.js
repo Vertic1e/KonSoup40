@@ -566,6 +566,13 @@ let map, userMarker;
 
 // DOM elements
 document.addEventListener('DOMContentLoaded', () => {
+  // Check for pending cart
+  const pendingCart = localStorage.getItem('pendingCart');
+  if (pendingCart) {
+    cart = JSON.parse(pendingCart);
+    showNotification("Your previous order has been restored");
+  }
+  
   // Initialize the page
   displayMenuItems(currentCategory);
   setupEventListeners();
@@ -647,8 +654,9 @@ function setupEventListeners() {
   // Done button after payment
   document.getElementById('payment-done-btn').addEventListener('click', function() {
     document.getElementById('invoice-modal').classList.add('hidden');
-    // Reset cart and UI
+    // Clear both cart and localStorage
     cart = [];
+    localStorage.removeItem('pendingCart');
     updateCartUI();
 
     // Show in-app notification
@@ -1340,9 +1348,8 @@ function generateInvoice(order) {
     </div>
   `;
 
-  // Reset cart after order is complete
-  cart = [];
-  updateCartUI();
+  // Save cart to localStorage instead of resetting
+  localStorage.setItem('pendingCart', JSON.stringify(cart));
 }
 
 function printInvoice() {
