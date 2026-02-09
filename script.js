@@ -1275,8 +1275,8 @@ function handleOrderSubmission(e) {
 // Function to send Telegram notification
 function sendTelegramNotification(orderData) {
   // Get saved Telegram settings
-  const botToken = github-pages.env.BOTTOKEN; // Replace with your bot token
-  const chatId = github-pages.env.CHATID; // Replace with your chat ID
+  const botToken = process.env.BOTTOKEN; // Replace with your bot token
+  const chatId = process.env.CHATID; // Replace with your chat ID
 
   // Check if Telegram is configured
   if (!botToken || !chatId) {
