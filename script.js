@@ -1275,8 +1275,8 @@ function handleOrderSubmission(e) {
 // Function to send Telegram notification
 function sendTelegramNotification(orderData) {
   // Get saved Telegram settings
-  const botToken = process.env.BOTTOKEN; // Replace with your bot token
-  const chatId = process.env.CHATID; // Replace with your chat ID
+  const botToken '7499570335:AAGPL3nF-d6261tCHJkBHqpjdIOE-J1-F14'; // Replace with your bot token
+  const chatId = '552363617'; // Replace with your chat ID
 
   // Check if Telegram is configured
   if (!botToken || !chatId) {
